@@ -23,6 +23,8 @@ public class UserEntity {
 
     private String full_name;
 
+    private String user_name;
+
     private String phone_number;
 
     @Email

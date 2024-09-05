@@ -17,6 +17,9 @@ public class UserSignUpRequest {
     @NotEmpty(message = "Full Name is required")
     private String fullName;
 
+    @NotEmpty(message = "User Name is required")
+    private String userName;
+
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;

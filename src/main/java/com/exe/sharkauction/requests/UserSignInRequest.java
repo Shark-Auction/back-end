@@ -14,8 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserSignInRequest implements Serializable {
     @NotBlank
-    @Email
-    private String email;
+    private String user_name;
 
     @NotBlank
     private String password;

@@ -42,7 +42,7 @@ public class TokenProvider {
                 .compact();
 
         TokenEntity token = new TokenEntity();
-        token.setExpirationDate(expiryDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        token.setExpiration_date(expiryDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         token.setExpired(false);
         token.setRevoked(false);
         token.setUser(userPrincipal.getUser());

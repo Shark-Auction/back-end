@@ -67,6 +67,7 @@ public class UserService implements IUserService {
         }
         UserEntity user = new UserEntity();
         user.setFull_name(request.getFullName());
+        user.setUser_name(request.getUserName());
         user.setPhone_number(request.getPhone());
         user.setAddress(request.getAddress());
         user.setDate_of_birth(request.getDob()  );
@@ -85,7 +86,7 @@ public class UserService implements IUserService {
     public SignInResponse signIn(UserSignInRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUser_name(),
                         request.getPassword()
                 )
         );
@@ -108,7 +109,8 @@ public class UserService implements IUserService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(userPrincipal.getId())
-                .fullName(userPrincipal.getUsername())
+                .fullName(userPrincipal.getFullName())
+                .userName(userPrincipal.getUsername())
                 .roleName(userPrincipal.getUser().getRole_id().getName())
                 .build();
     }
@@ -137,7 +139,7 @@ public class UserService implements IUserService {
         if(refreshToken.isExpired()){
             throw new AppException(HttpStatus.BAD_REQUEST,"Token đã hết hạn");
         }
-        if(refreshToken.getExpirationDate().isBefore(LocalDate.now())){
+        if(refreshToken.getExpiration_date().isBefore(LocalDate.now())){
             refreshToken.setExpired(true);
             throw new AppException(HttpStatus.BAD_REQUEST,"Token đã hết hạn");
         }

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenEntity extends BaseEntiy{
+public class TokenEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,7 @@ public class TokenEntity extends BaseEntiy{
     private String name;
 
     @Column(name = "expiration_date")
-    private LocalDate expirationDate;
+    private LocalDate expiration_date;
 
     private boolean revoked;
 

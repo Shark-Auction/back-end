@@ -51,6 +51,10 @@ public class UserPrincipal implements UserDetails {
     public String getEmail() {
         return user.getEmail();
     }
+    public String getFullName() {
+        return user.getFull_name();
+    }
+
 
     @Override
     public String getPassword() {
@@ -59,7 +63,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getUser_name();
     }
 
     @Override
