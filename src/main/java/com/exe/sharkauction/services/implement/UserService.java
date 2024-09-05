@@ -177,6 +177,20 @@ public class UserService implements IUserService {
         applicationEventPublisher.publishEvent(new MailEvent(this, user, url, "forgot"));
     }
 
+    public void checkUserName(String userName) {
+        boolean exists = userRepository.existsByUserName(userName);
+        if (exists) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists.");
+        }
+    }
+
+    public void checkEmail(String email) {
+        boolean exists = userRepository.existsByEmail(email);
+        if (exists) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists.");
+        }
+    }
+
     private void sendVerifyMail(UserEntity user) {
         String token = tokenProvider.createToken(user.getId(), 600000); // 10 minutes
         String urlPattern = verifyUrl + "?userId={0}&token={1}";

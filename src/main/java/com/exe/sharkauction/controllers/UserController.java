@@ -98,4 +98,20 @@ public class UserController {
         String[] parts = token.split("\\.");
         return parts.length == 3;
     }
+
+    @GetMapping("/check-username")
+    public CoreApiResponse<?> checkUserName(
+            @RequestParam String userName
+    ) {
+        userService.checkUserName(userName);
+        return CoreApiResponse.success("Username is available.");
+    }
+
+    @GetMapping("/check-email")
+    public CoreApiResponse<?> checkEmail(
+            @RequestParam String email
+    ) {
+        userService.checkEmail(email);
+        return CoreApiResponse.success("Email is available.");
+    }
 }

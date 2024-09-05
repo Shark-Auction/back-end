@@ -16,4 +16,7 @@ public interface IUserService {
     void setPassword(Long userId, String token, UserForgotPasswordRequest request);
 
     void sendMailForgotPassword(String email);
+
+    void checkUserName(String userName);
+    void checkEmail(String email);
 }
