@@ -19,6 +19,6 @@ FROM openjdk:17-slim
 # set deployment directory
 WORKDIR /app
 # copy over the built artifact from the maven image
-COPY --from=stage1 /app/target/*.jar /app
+COPY --from=stage1 /app/target/sharkauction-0.0.1-SNAPSHOT.jar /app
 
 ENTRYPOINT ["java", "-jar", "sharkauction-0.0.1-SNAPSHOT.jar"]
