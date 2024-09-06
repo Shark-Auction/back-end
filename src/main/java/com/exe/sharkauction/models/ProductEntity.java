@@ -37,6 +37,10 @@ public class ProductEntity extends BaseEntity {  // Đảm bảo tên lớp cơ 
     @JoinColumn(name = "brand_id")
     private BrandEntity brand;
 
+    @ManyToOne
+    @JoinColumn(name = "origin_id")
+    private OriginEntity origin;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "product_condition")
     private ProductCondition condition;

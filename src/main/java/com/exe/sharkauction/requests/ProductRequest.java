@@ -1,21 +1,26 @@
 package com.exe.sharkauction.requests;
 
-import java.util.List;
+import lombok.*;
 
+import java.util.List;
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductRequest {
+
     private String name;
 
     private String description;
 
-    private Long category;
+    private Long categoryId;
 
-    private float weight;
+    private String brandName;
 
-    private String size;
+    private String originName;
 
-    private String color;
-
-    private String brand;
+    private float startingPrice;
 
     private String condition;
 

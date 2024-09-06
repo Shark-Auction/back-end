@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IProductService {
-    ProductEntity createProduct(ProductEntity jewelry, MultipartFile imageFile, List<MultipartFile> images) throws IOException;
+    ProductEntity createProduct(ProductEntity product, MultipartFile imageFile, List<MultipartFile> images) throws IOException;
     ProductEntity getProductById(long id);
-    List<ProductEntity> getAllJewelrys();
-    ProductEntity updateProduct(long jewelryId, ProductRequest product);
-    void deleteProduct(long id);
-    void uploadThumbnail(Long jewelryId, MultipartFile imageFile) throws IOException;
-
-    List<ProductEntity> getJewelryBySellerId();
+    List<ProductEntity> getAllProducts();
+//    ProductEntity updateProduct(long jewelryId, ProductRequest product);
+//    void deleteProduct(long id);
+//    void uploadThumbnail(Long jewelryId, MultipartFile imageFile) throws IOException;
+//
+//    List<ProductEntity> getJewelryBySellerId();
 
 
 }
