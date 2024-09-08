@@ -11,11 +11,10 @@ public interface IProductService {
     ProductEntity createProduct(ProductEntity product, MultipartFile imageFile, List<MultipartFile> images) throws IOException;
     ProductEntity getProductById(long id);
     List<ProductEntity> getAllProducts();
-//    ProductEntity updateProduct(long jewelryId, ProductRequest product);
-//    void deleteProduct(long id);
-//    void uploadThumbnail(Long jewelryId, MultipartFile imageFile) throws IOException;
-//
-//    List<ProductEntity> getJewelryBySellerId();
+    ProductEntity updateProduct(long productId, ProductRequest product);
+    void deleteProduct(long id);
+    void uploadThumbnail(Long productId, MultipartFile imageFile) throws IOException;
+    List<ProductEntity> getMyProduct();
 
 
 }

@@ -6,12 +6,14 @@ import com.exe.sharkauction.components.exceptions.DataNotFoundException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
 import com.exe.sharkauction.components.utils.StringUtils;
 import com.exe.sharkauction.components.utils.UploadImagesUtils;
+import com.exe.sharkauction.mappers.IProductMapper;
 import com.exe.sharkauction.models.*;
 import com.exe.sharkauction.models.enums.ProductStatus;
 import com.exe.sharkauction.repositories.IBrandRepository;
 import com.exe.sharkauction.repositories.ICategoryRepository;
 import com.exe.sharkauction.repositories.IOriginRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
+import com.exe.sharkauction.requests.ProductRequest;
 import com.exe.sharkauction.services.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class ProductService implements IProductService {
     private final ICategoryRepository categoryRepository;
     private final IBrandRepository brandRepository;
     private final IOriginRepository originRepository;
+    private final IProductMapper productMapper;
+
     @Override
     public ProductEntity createProduct(ProductEntity product, MultipartFile imageFile, List<MultipartFile> images) throws IOException {
         CategoryEntity existingCategory = categoryRepository
@@ -96,4 +100,53 @@ public class ProductService implements IProductService {
     public List<ProductEntity> getAllProducts() {
         return productRepository.findAll();
     }
+
+    @Override
+    public ProductEntity updateProduct(long productId, ProductRequest product) {
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(long id) {
+
+    }
+
+    @Override
+    public void uploadThumbnail(Long productId, MultipartFile imageFile) throws IOException {
+
+    }
+
+    @Override
+    public List<ProductEntity> getMyProduct() {
+        return null;
+    }
+
+
+//    @Override
+//    public ProductEntity updateProduct(long productId, ProductRequest request) {
+//        ProductEntity existingProduct = getProductById(productId);
+//        productMapper.updateProductFromRequest(request, existingProduct);
+//
+//        if (request.getCategoryId() != null && !existingProduct.getCategory().getId().equals(request.getCategoryId())) {
+//            CategoryEntity existingCategory = categoryRepository
+//                    .findById(request.getCategoryId())
+//                    .orElseThrow(() -> new DataNotFoundException("Category", "id", request.getCategoryId()));
+//            existingProduct.setCategory(existingCategory);
+//        }
+//
+//        if (request.getBrandName() != null && !existingProduct.getBrand().getName().equals(request.getBrandName())) {
+//            BrandEntity existingBrand = brandRepository
+//                    .findByName(request.getBrandName());
+//            existingProduct.setBrand(existingBrand);
+//}
+
+//        if (request.getCollection() != null && !existingJewelry.getCollection().getName().equals(request.getCollection())) {
+//            CollectionEntity existingCollection = collectionRepository
+//                    .findByName(request.getCollection());
+//            existingJewelry.setCollection(existingCollection);
+//        }
+//
+//        return jewelryRepository.save(existingJewelry);
+//    }
+
 }

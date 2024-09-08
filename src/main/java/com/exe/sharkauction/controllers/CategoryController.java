@@ -3,6 +3,7 @@ package com.exe.sharkauction.controllers;
 import com.exe.sharkauction.components.apis.CoreApiResponse;
 import com.exe.sharkauction.models.CategoryEntity;
 import com.exe.sharkauction.requests.CategoryRequest;
+import com.exe.sharkauction.responses.CategoryResponse;
 import com.exe.sharkauction.services.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,18 @@ public class CategoryController {
         categoryServices.deleteCategory(id);
         return CoreApiResponse.success("Delete category successfully");
     }
+
+
+    @GetMapping("/parents/{categoryId}")
+    public CategoryResponse getParentCategories(@PathVariable Long categoryId) {
+        return categoryServices.getCategoryHierarchy(categoryId);
+    }
+
+    @GetMapping("/children/{parentId}")
+    public List<CategoryResponse> getChildCategories(@PathVariable Long parentId) {
+        return categoryServices.getChildCategory(parentId);
+    }
+
+
 
 }
