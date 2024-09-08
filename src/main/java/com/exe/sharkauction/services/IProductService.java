@@ -11,7 +11,7 @@ public interface IProductService {
     ProductEntity createProduct(ProductEntity product, MultipartFile imageFile, List<MultipartFile> images) throws IOException;
     ProductEntity getProductById(long id);
     List<ProductEntity> getAllProducts();
-    ProductEntity updateProduct(long productId, ProductRequest product);
+    ProductEntity updateProduct(long productId, ProductRequest request);
     void deleteProduct(long id);
     void uploadThumbnail(Long productId, MultipartFile imageFile) throws IOException;
     List<ProductEntity> getMyProduct();

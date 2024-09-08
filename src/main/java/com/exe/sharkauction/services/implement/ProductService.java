@@ -101,52 +101,65 @@ public class ProductService implements IProductService {
         return productRepository.findAll();
     }
 
-    @Override
-    public ProductEntity updateProduct(long productId, ProductRequest product) {
-        return null;
-    }
+
+
+
+
+
+
+
 
     @Override
-    public void deleteProduct(long id) {
+    public ProductEntity updateProduct(long productId, ProductRequest request) {
+        ProductEntity existingProduct = getProductById(productId);
+        productMapper.updateProductFromRequest(request, existingProduct);
 
+        if (request.getCategoryId() != null && !existingProduct.getCategory().getId().equals(request.getCategoryId())) {
+            CategoryEntity existingCategory = categoryRepository
+                    .findById(request.getCategoryId())
+                    .orElseThrow(() -> new DataNotFoundException("Category", "id", request.getCategoryId()));
+            existingProduct.setCategory(existingCategory);
+        }
+
+        if (request.getBrandName() != null && !existingProduct.getBrand().getName().equals(request.getBrandName())) {
+            BrandEntity existingBrand = brandRepository
+                    .findByName(request.getBrandName());
+            existingProduct.setBrand(existingBrand);
+}
+
+        if (request.getOriginName() != null && !existingProduct.getOrigin().getName().equals(request.getOriginName())) {
+            OriginEntity existingOrigin = originRepository
+                    .findByName(request.getOriginName());
+            existingProduct.setOrigin(existingOrigin);
+        }
+
+        return productRepository.save(existingProduct);
     }
 
     @Override
     public void uploadThumbnail(Long productId, MultipartFile imageFile) throws IOException {
+        ProductEntity existingProduct = getProductById(productId);
+        existingProduct.setThumbnail(UploadImagesUtils.storeFile(imageFile, ImageContants.PRODUCT_IMAGE_PATH));
+        productRepository.save(existingProduct);
+    }
 
+    @Override
+    public void deleteProduct(long id) {
+        ProductEntity existingProduct = getProductById(id);
+
+        if (existingProduct.getStatus() == ProductStatus.PENDING) {
+            productRepository.deleteById(id);
+        } else {
+            throw new AppException(HttpStatus.BAD_REQUEST,"Sản phẩm đang trong quá trình đấu giá không thể xoá");
+        }
     }
 
     @Override
     public List<ProductEntity> getMyProduct() {
-        return null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
+        return productRepository.findProductsBySeller(user);
     }
-
-
-//    @Override
-//    public ProductEntity updateProduct(long productId, ProductRequest request) {
-//        ProductEntity existingProduct = getProductById(productId);
-//        productMapper.updateProductFromRequest(request, existingProduct);
-//
-//        if (request.getCategoryId() != null && !existingProduct.getCategory().getId().equals(request.getCategoryId())) {
-//            CategoryEntity existingCategory = categoryRepository
-//                    .findById(request.getCategoryId())
-//                    .orElseThrow(() -> new DataNotFoundException("Category", "id", request.getCategoryId()));
-//            existingProduct.setCategory(existingCategory);
-//        }
-//
-//        if (request.getBrandName() != null && !existingProduct.getBrand().getName().equals(request.getBrandName())) {
-//            BrandEntity existingBrand = brandRepository
-//                    .findByName(request.getBrandName());
-//            existingProduct.setBrand(existingBrand);
-//}
-
-//        if (request.getCollection() != null && !existingJewelry.getCollection().getName().equals(request.getCollection())) {
-//            CollectionEntity existingCollection = collectionRepository
-//                    .findByName(request.getCollection());
-//            existingJewelry.setCollection(existingCollection);
-//        }
-//
-//        return jewelryRepository.save(existingJewelry);
-//    }
 
 }
