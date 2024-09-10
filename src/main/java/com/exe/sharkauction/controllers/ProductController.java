@@ -44,5 +44,32 @@ public class ProductController {
         return CoreApiResponse.success(product);
     }
 
+    @DeleteMapping("/{id}")
+    public CoreApiResponse<?> deleteCategory(
+            @PathVariable Long id
+    ){
+        productService.deleteProduct(id);
+        return CoreApiResponse.success("Delete product successfully");
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public List<ProductEntity> getJewelryBySellerId() {
+        return productService.getMyProduct();
+    }
+
+
+    @PutMapping("/{id}")
+    public CoreApiResponse<ProductEntity> updateMaterial(
+            @PathVariable Long id,
+            @RequestBody ProductRequest productRequest
+    ){
+        ProductEntity updateJewelry= productService.updateProduct(id, productRequest);
+        return CoreApiResponse.success(updateJewelry, "Update product successfully");
+    }
+
+
+
+
 
 }
