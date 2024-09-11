@@ -162,4 +162,17 @@ public class ProductService implements IProductService {
         return productRepository.findProductsBySeller(user);
     }
 
+    public void confirmProduct(long id ){
+        ProductEntity existingProduct = getProductById(id);
+        if (existingProduct.getStatus() == ProductStatus.PENDING) {
+            existingProduct.setStatus(ProductStatus.CONFIRMING);
+            productRepository.save(existingProduct);
+        } else {
+            throw new AppException(HttpStatus.BAD_REQUEST,"Không thể xác nhận sản phẩm");
+        }
+
+    }
+
+
+
 }

@@ -16,5 +16,7 @@ public interface IProductService {
     void uploadThumbnail(Long productId, MultipartFile imageFile) throws IOException;
     List<ProductEntity> getMyProduct();
 
+    void confirmProduct(long id);
+
 
 }

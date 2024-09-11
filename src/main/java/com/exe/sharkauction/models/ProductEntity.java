@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class ProductEntity extends BaseEntity {  // Đảm bảo tên lớp cơ sở là BaseEntity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -45,11 +45,19 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public CoreApiResponse<?> deleteCategory(
+    public CoreApiResponse<?> deleteProduct(
             @PathVariable Long id
     ){
         productService.deleteProduct(id);
         return CoreApiResponse.success("Delete product successfully");
+    }
+
+    @PutMapping("confirm/{id}")
+    public CoreApiResponse<?> confirmProduct(
+            @PathVariable Long id
+    ){
+        productService.confirmProduct(id);
+        return CoreApiResponse.success("Confirm product successfully");
     }
 
     @GetMapping("/me")
