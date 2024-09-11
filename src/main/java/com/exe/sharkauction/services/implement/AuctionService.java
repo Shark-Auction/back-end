@@ -56,6 +56,7 @@ public class AuctionService implements IAuctionService {
                         new DataNotFoundException(
                                 "Jewelry", "id", auction.getProduct().getId()));
 
+
         if (!existingProduct.getSeller().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
