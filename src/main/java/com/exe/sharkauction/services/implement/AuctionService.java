@@ -3,6 +3,7 @@ package com.exe.sharkauction.services.implement;
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.exceptions.DataNotFoundException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
+import com.exe.sharkauction.controllers.WebSocketController;
 import com.exe.sharkauction.models.*;
 import com.exe.sharkauction.models.enums.AuctionStatus;
 import com.exe.sharkauction.models.enums.ProductCondition;
@@ -38,6 +39,8 @@ public class AuctionService implements IAuctionService {
     private final IProductRepository productRepository;
     private final IBiddingRepository biddingRepository;
     private final IAutoBiddingRepository autoBiddingRepository;
+    private final WebSocketController webSocketController;
+
 
     @Override
     public AuctionEntity createAuction(AuctionEntity auction) {
@@ -79,6 +82,8 @@ public class AuctionService implements IAuctionService {
 
         AuctionEntity auction = auctionRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
+
+        webSocketController.sendAuctionUpdate(auction);
 
         return auction;
     }
