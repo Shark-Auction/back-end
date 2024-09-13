@@ -4,12 +4,15 @@ package com.exe.sharkauction.controllers;
 import com.exe.sharkauction.components.apis.CoreApiResponse;
 import com.exe.sharkauction.components.configurations.AppProperties;
 import com.exe.sharkauction.components.exceptions.AppException;
+import com.exe.sharkauction.mappers.IUserMapper;
+import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.requests.UserForgotPasswordRequest;
 import com.exe.sharkauction.requests.UserRefreshRequest;
 import com.exe.sharkauction.requests.UserSignInRequest;
 import com.exe.sharkauction.requests.UserSignUpRequest;
 import com.exe.sharkauction.responses.RefreshResponse;
 import com.exe.sharkauction.responses.SignInResponse;
+import com.exe.sharkauction.responses.UserProfileResponse;
 import com.exe.sharkauction.services.IUserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +20,10 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import static com.exe.sharkauction.mappers.IUserMapper.INSTANCE;
+
 
 @Slf4j
 @RestController
@@ -32,7 +38,7 @@ public class UserController {
     @PostMapping("/signup")
     public CoreApiResponse<?> signup(@Valid @RequestBody UserSignUpRequest signUpRequest) {
         userService.signUp(signUpRequest);
-        return CoreApiResponse.success("User registered successfully");
+        return CoreApiResponse.success("Tài khoản đã được tạo thành công. Vui lòng kiểm tra email để xác thực ");
     }
 
     @PostMapping("/signin")
@@ -55,7 +61,7 @@ public class UserController {
             @RequestParam String token
     ) {
         userService.verify(userId,token);
-        return CoreApiResponse.success("User verified successfully");
+        return CoreApiResponse.success("Xác minh email thành công");
     }
 
     @PostMapping("/refresh")
@@ -78,7 +84,7 @@ public class UserController {
             @Valid @RequestParam String email
     ){
         userService.sendMailForgotPassword(email);
-        return CoreApiResponse.success("Check your mail");
+        return CoreApiResponse.success("Vui lòng kiểm tra email để thay đổi mật khẩu");
     }
 
     @PutMapping("/setpassword")
@@ -104,7 +110,7 @@ public class UserController {
             @RequestParam String userName
     ) {
         userService.checkUserName(userName);
-        return CoreApiResponse.success("Username is available.");
+        return CoreApiResponse.success("Tên người dùng đã tồn tại.");
     }
 
     @GetMapping("/check-email")
@@ -112,6 +118,14 @@ public class UserController {
             @RequestParam String email
     ) {
         userService.checkEmail(email);
-        return CoreApiResponse.success("Email is available.");
+        return CoreApiResponse.success("Email đã tồn tại.");
+    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/profile")
+    public CoreApiResponse<UserProfileResponse> getCurrentUserProfile() {
+        UserEntity currentUser = userService.getUserProfile();
+        UserProfileResponse response =INSTANCE.toResponse(currentUser);
+
+        return CoreApiResponse.success(response);
     }
 }

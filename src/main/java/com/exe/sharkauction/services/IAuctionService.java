@@ -39,5 +39,7 @@ public interface IAuctionService {
     int countUniqueBidders(Long auctionId);
 
 
-    public AuctionEntity reAuction(long id, UpdateTimeAuctionRequest request);
+    AuctionEntity reAuction(long id, UpdateTimeAuctionRequest request);
+
+    List<AuctionEntity> getAuctionsBySellerId(Long sellerId);
 }

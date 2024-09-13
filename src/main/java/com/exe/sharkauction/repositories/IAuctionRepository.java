@@ -60,4 +60,7 @@ public interface IAuctionRepository extends JpaRepository<AuctionEntity, Long> {
 
     List<AuctionEntity> findByWinnerAndStatus(UserEntity winner, AuctionStatus status);
 
+    @Query("SELECT a FROM AuctionEntity a WHERE a.product.seller.id = :sellerId")
+    List<AuctionEntity> findAuctionsBySellerId(@Param("sellerId") Long sellerId);
+
 }

@@ -143,4 +143,9 @@ public class AuctionController {
         AuctionEntity updatedAuction = auctionService.reAuction(id, request);
         return CoreApiResponse.success(updatedAuction,"Update auction successfully");
     }
+
+    @GetMapping("/seller/{sellerId}")
+    public List<AuctionEntity> getAuctionsBySellerId(@PathVariable Long sellerId) {
+        return auctionService.getAuctionsBySellerId(sellerId);
+    }
 }

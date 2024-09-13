@@ -198,5 +198,12 @@ public class UserService implements IUserService {
         applicationEventPublisher.publishEvent(new MailEvent(this, user, url, "verify"));
     }
 
+    public UserEntity getUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
+        return user;
+    }
+
 
 }

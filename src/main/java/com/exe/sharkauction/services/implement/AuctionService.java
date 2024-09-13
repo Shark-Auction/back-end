@@ -63,7 +63,7 @@ public class AuctionService implements IAuctionService {
         List<AuctionEntity> activeAuctions = auctionRepository
                 .findActiveAuctionsByProductId(existingProduct.getId());
         if (!activeAuctions.isEmpty()) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Jewelry already has an active auction.");
+            throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm đã có phiên đấu giá.");
         }
         existingProduct.setStatus(ProductStatus.AUCTIONING);
         auction.setCurrentPrice(existingProduct.getStartingPrice());
@@ -78,7 +78,7 @@ public class AuctionService implements IAuctionService {
     public AuctionEntity getAuctionById(long id) {
 
         AuctionEntity auction = auctionRepository.findById(id)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This auction is not existed!"));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
 
         return auction;
     }
@@ -92,7 +92,7 @@ public class AuctionService implements IAuctionService {
     @Override
     public AuctionEntity updateTime(Long auctionId, UpdateTimeAuctionRequest request) {
         AuctionEntity auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This auction is not existed!"));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
 
         if (request.getStartTime() != null) {
             auction.setStartTime(request.getStartTime());
@@ -137,13 +137,13 @@ public class AuctionService implements IAuctionService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
         AuctionEntity auction = auctionRepository.findById(id)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This auction is not existed!"));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
 
         if (auction.getStatus() != AuctionStatus.Waiting && auction.getStatus() != AuctionStatus.WaitingPay) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Auctions are not waiting or waiting confirm.");
+            throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm đang được đấu giá không thể huỷ");
         }
         if (!auction.getProduct().getSeller().getId().equals(user.getId())) {
-            throw new AppException(HttpStatus.UNAUTHORIZED, "You do not have access");
+            throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         auction.setStatus(AuctionStatus.Cancel);
 
@@ -156,7 +156,7 @@ public class AuctionService implements IAuctionService {
         List<AutoBiddingEntity> autoBiddingEntities = autoBiddingRepository.findByAuctionId(auctionId);
 
         AuctionEntity auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This auction is not existed!"));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
 
         List<ListBidForAuction> bids = new ArrayList<>();
 
@@ -225,7 +225,7 @@ public class AuctionService implements IAuctionService {
 
     private void validateAuctionDuration(Date startTime, Date endTime) {
         if (startTime.after(endTime)) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Start time cannot be after end time");
+            throw new AppException(HttpStatus.BAD_REQUEST, "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc");
         }
 
         Instant startInstant = startTime.toInstant();
@@ -234,7 +234,7 @@ public class AuctionService implements IAuctionService {
         Duration duration = Duration.between(startInstant, endInstant);
 
         if (duration.toDays() < 1 || duration.toDays() > 7) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Auction duration must be between 1 and 7 days");
+            throw new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá phải diễn ra từ 1 - 7 ngày");
         }
     }
 
@@ -260,9 +260,9 @@ public class AuctionService implements IAuctionService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
         AuctionEntity auction = auctionRepository.findById(id)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This auction is not existed!"));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
         if (!auction.getProduct().getSeller().getId().equals(user.getId())) {
-            throw new AppException(HttpStatus.UNAUTHORIZED, "You do not have access");
+            throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         ProductEntity jewelry = auction.getProduct();
 
@@ -278,5 +278,9 @@ public class AuctionService implements IAuctionService {
         auction.setStatus(AuctionStatus.Waiting);
 
         return auctionRepository.save(auction);
+    }
+
+    public List<AuctionEntity> getAuctionsBySellerId(Long sellerId) {
+        return auctionRepository.findAuctionsBySellerId(sellerId);
     }
 }
