@@ -21,12 +21,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("*")  // Cho phép tất cả nguồn gốc
-                .withSockJS()
-                .setWebSocketEnabled(true)  // Đảm bảo WebSocket được bật
-                .setSessionCookieNeeded(false); // Tắt yêu cầu cookie session nếu không cần thiết
+    public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
+        stompEndpointRegistry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 
 }
