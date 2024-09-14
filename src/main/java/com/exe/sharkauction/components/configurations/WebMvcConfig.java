@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -31,33 +32,33 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //                .maxAge(MAX_AGE_SECS);
 //    }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-
-        //  Set routes that allow cross domain routing
-        registry.addMapping("/**")
-                //  Set the domain name that allows cross domain requests
-                //.allowedOrigins("*")
-                // Cross domain configuration error , take .allowedOrigins Replace with .allowedOriginPatterns that will do .
-                .allowedOriginPatterns("*")
-                //  Whether to allow certificates （cookies）
-                .allowCredentials(true)
-                //  Set allowed methods
-                .allowedMethods("*")
-                //  Cross domain allow time
-                .maxAge(3600);
-    }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowedOriginPatterns(Arrays.asList("*"));
-//        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
-//        config.addAllowedHeader("*");
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//
+//        //  Set routes that allow cross domain routing
+//        registry.addMapping("/**")
+//                //  Set the domain name that allows cross domain requests
+//                //.allowedOrigins("*")
+//                // Cross domain configuration error , take .allowedOrigins Replace with .allowedOriginPatterns that will do .
+//                .allowedOriginPatterns("*")
+//                //  Whether to allow certificates （cookies）
+//                .allowCredentials(true)
+//                //  Set allowed methods
+//                .allowedMethods("*")
+//                //  Cross domain allow time
+//                .maxAge(3600);
 //    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+        config.addAllowedHeader("*");
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
