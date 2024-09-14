@@ -21,13 +21,31 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${app.cors.allowedOrigins}")
     private String[] allowedOrigins;
 
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOriginPatterns("*")
+//                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+//                .allowedHeaders("*")
+//                .allowCredentials(false)
+//                .maxAge(MAX_AGE_SECS);
+//    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+
+        //  Set routes that allow cross domain routing
         registry.addMapping("/**")
+                //  Set the domain name that allows cross domain requests
+                //.allowedOrigins("*")
+                // Cross domain configuration error , take .allowedOrigins Replace with .allowedOriginPatterns that will do .
                 .allowedOriginPatterns("*")
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .maxAge(MAX_AGE_SECS);
+                //  Whether to allow certificates （cookies）
+                .allowCredentials(true)
+                //  Set allowed methods
+                .allowedMethods("*")
+                //  Cross domain allow time
+                .maxAge(3600);
     }
 
 //    @Bean
