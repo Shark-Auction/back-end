@@ -23,44 +23,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${app.cors.allowedOrigins}")
     private String[] allowedOrigins;
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOriginPatterns(allowedOrigins)
-//                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-//                .allowedHeaders("*")
-//                .allowCredentials(false)
-//                .maxAge(MAX_AGE_SECS);
-//    }
-
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//
-//        //  Set routes that allow cross domain routing
-//        registry.addMapping("/**")
-//                //  Set the domain name that allows cross domain requests
-//                //.allowedOrigins("*")
-//                // Cross domain configuration error , take .allowedOrigins Replace with .allowedOriginPatterns that will do .
-//                .allowedOriginPatterns("*")
-//                //  Whether to allow certificates （cookies）
-//                .allowCredentials(true)
-//                //  Set allowed methods
-//                .allowedMethods("*")
-//                //  Cross domain allow time
-//                .maxAge(3600);
-//    }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOriginPattern("*");
-//        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
-//        config.addAllowedHeader("*");
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
-
 
     @Bean
     public CorsFilter corsFilter() {

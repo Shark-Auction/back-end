@@ -82,7 +82,7 @@ public class AuctionService implements IAuctionService {
 
         AuctionEntity auction = auctionRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
-
+        auctionRepository.save(auction);
         webSocketController.sendAuctionUpdate(auction);
 
         return auction;
