@@ -42,10 +42,11 @@ public class AuctionSchedule {
                     auction.setStatus(AuctionStatus.Completed);
                     product.setStatus(ProductStatus.AUCTIONSUCCESS);
                 }
+                else {
+                    auction.setStatus(AuctionStatus.Fail);
+                    product.setStatus(ProductStatus.AUCTIONFAIL);
+                }
 
-            } else {
-                auction.setStatus(AuctionStatus.Fail);
-                product.setStatus(ProductStatus.AUCTIONFAIL);
             }
             productRepository.save(product);
             auctionRepository.save(auction);
