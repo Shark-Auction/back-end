@@ -27,7 +27,7 @@ public class CategoryController {
             @RequestParam(name = "imageThumbnail", required = false) MultipartFile imageThumbnail
     ) throws IOException {
         CategoryEntity categoryResponse = categoryServices.createCategory(INSTANCE.toModel(categoryRequest),imageThumbnail);
-        return CoreApiResponse.success(categoryResponse,"Insert category successfully");
+        return CoreApiResponse.success(categoryResponse,"Thêm danh mục mới thành công");
     }
 
     @GetMapping("")
@@ -50,7 +50,7 @@ public class CategoryController {
 
     ) throws IOException {
         CategoryEntity updateCategory = categoryServices.updateCategory(id, INSTANCE.toModel(categoryRequest),imageThumbnail);
-        return CoreApiResponse.success(updateCategory, "Update category successfully");
+        return CoreApiResponse.success(updateCategory, "Cập nhật danh mục mới thành công");
     }
 
     @DeleteMapping("/{id}")

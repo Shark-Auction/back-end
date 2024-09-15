@@ -21,7 +21,7 @@ public class BrandController {
             @Valid @RequestBody BrandRequest brandRequest
     ){
         BrandEntity brandEntity = brandService.createBrand(INSTANCE.toModel(brandRequest));
-        return CoreApiResponse.success(brandEntity,"Insert brand successfully");
+        return CoreApiResponse.success(brandEntity,"Thêm nhãn hàng mới thành công");
     }
 
     @GetMapping("")
@@ -42,7 +42,7 @@ public class BrandController {
             @Valid @RequestBody BrandRequest brandRequest
     ){
         BrandEntity updateBrand = brandService.updateBrand(id, INSTANCE.toModel(brandRequest));
-        return CoreApiResponse.success(updateBrand, "Update brand successfully");
+        return CoreApiResponse.success(updateBrand, "Cập nhật nhãn hàng thành công");
     }
 
     @DeleteMapping("/{id}")
@@ -50,6 +50,6 @@ public class BrandController {
             @PathVariable Long id
     ){
         brandService.deleteBrand(id);
-        return CoreApiResponse.success("Delete brand successfully");
+        return CoreApiResponse.success("Xoá nhãn hàng thành công");
     }
 }

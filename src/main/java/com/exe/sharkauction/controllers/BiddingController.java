@@ -23,7 +23,7 @@ public class BiddingController {
             @Valid @RequestBody BidRequest bidRequest
     ){
         biddingService.createBidding(bidRequest);
-        return CoreApiResponse.success("Bidding successfully");
+        return CoreApiResponse.success("Đấu giá thành công");
     }
 
     @GetMapping("auction/{id}")
