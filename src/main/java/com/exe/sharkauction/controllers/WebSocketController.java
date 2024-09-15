@@ -18,6 +18,6 @@ public class WebSocketController {
     }
 
     public void sendListAuctionUpdate(Long userId, List<AuctionEntity> auctions) {
-        messagingTemplate.convertAndSendToUser(String.valueOf(userId),"/topic/auctions/user"+ userId, auctions);
+        messagingTemplate.convertAndSendToUser(String.valueOf(userId), "/queue/auctions/my", auctions);
     }
 }
