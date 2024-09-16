@@ -50,7 +50,7 @@ public class CategoryController {
 
     ) throws IOException {
         CategoryEntity updateCategory = categoryServices.updateCategory(id, INSTANCE.toModel(categoryRequest),imageThumbnail);
-        return CoreApiResponse.success(updateCategory, "Cập nhật danh mục mới thành công");
+        return CoreApiResponse.success(updateCategory, "Cập nhật danh mục thành công");
     }
 
     @DeleteMapping("/{id}")
@@ -58,7 +58,7 @@ public class CategoryController {
             @PathVariable Long id
     ){
         categoryServices.deleteCategory(id);
-        return CoreApiResponse.success("Delete category successfully");
+        return CoreApiResponse.success("Xoá danh mục thành công");
     }
 
 

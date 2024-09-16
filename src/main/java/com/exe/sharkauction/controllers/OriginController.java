@@ -21,7 +21,7 @@ public class OriginController {
             @Valid @RequestBody OriginRequest originRequest
     ){
         OriginEntity originEntity = originService.createOrigin(INSTANCE.toModel(originRequest));
-        return CoreApiResponse.success(originEntity,"Insert origin successfully");
+        return CoreApiResponse.success(originEntity,"Thêm nguồn gốc mới thành công");
     }
 
     @GetMapping("")
@@ -42,7 +42,7 @@ public class OriginController {
             @Valid @RequestBody OriginRequest originRequest
     ){
         OriginEntity updateOrigin = originService.updateOrigin(id, INSTANCE.toModel(originRequest));
-        return CoreApiResponse.success(updateOrigin, "Update origin successfully");
+        return CoreApiResponse.success(updateOrigin, "Cập nhật nguồn gốc thành công");
     }
 
     @DeleteMapping("/{id}")
@@ -50,6 +50,6 @@ public class OriginController {
             @PathVariable Long id
     ){
         originService.deleteOrigin(id);
-        return CoreApiResponse.success("Delete origin successfully");
+        return CoreApiResponse.success("Xoá nguồn gốc thành công");
     }
 }

@@ -29,7 +29,7 @@ public class ProductController {
             @RequestParam(name = "imagesFile", required = false) List<MultipartFile> images
     ) throws IOException {
         ProductEntity product = productService.createProduct(INSTANCE.toModel(request),imageThumbnail,images);
-        return CoreApiResponse.success(product,"Insert product successfully");
+        return CoreApiResponse.success(product,"Thêm sản phẩm mới thành công");
     }
 
     @GetMapping("")
@@ -49,7 +49,7 @@ public class ProductController {
             @PathVariable Long id
     ){
         productService.deleteProduct(id);
-        return CoreApiResponse.success("Delete product successfully");
+        return CoreApiResponse.success("Xoá sản phẩm thành công");
     }
 
     @PutMapping("confirm/{id}")
@@ -57,7 +57,7 @@ public class ProductController {
             @PathVariable Long id
     ){
         productService.confirmProduct(id);
-        return CoreApiResponse.success("Confirm product successfully");
+        return CoreApiResponse.success("Xác nhận sản phẩm thành công");
     }
 
     @GetMapping("/me")
@@ -73,7 +73,7 @@ public class ProductController {
             @RequestBody ProductRequest productRequest
     ){
         ProductEntity updateJewelry= productService.updateProduct(id, productRequest);
-        return CoreApiResponse.success(updateJewelry, "Update product successfully");
+        return CoreApiResponse.success(updateJewelry, "Cập nhật sản phẩm thành công");
     }
 
 
