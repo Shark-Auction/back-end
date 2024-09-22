@@ -227,7 +227,8 @@ public class AuctionService implements IAuctionService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
-        return auctionRepository.findByWinnerAndStatus(user, AuctionStatus.Completed);
+
+        return auctionRepository.findByWinnerAndEnded(user);
     }
 
     private void validateAuctionDuration(Date startTime, Date endTime) {
@@ -308,7 +309,7 @@ public class AuctionService implements IAuctionService {
         if (!auction.getProduct().getSeller().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
-        auction.setStatus(AuctionStatus.Completed);
+        auction.setStatus(AuctionStatus.WaitingPay);
 
         auctionRepository.save(auction);
     }

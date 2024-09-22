@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AuctionSchedule {
                         auction.setStatus(AuctionStatus.WaitingConfirm);
                         product.setStatus(ProductStatus.AUCTIONSUCCESS);
                     } else {
-                        auction.setStatus(AuctionStatus.Completed);
+                        auction.setStatus(AuctionStatus.WaitingPay);
                         product.setStatus(ProductStatus.AUCTIONSUCCESS);
                     }
                 }
@@ -53,6 +54,21 @@ public class AuctionSchedule {
                     product.setStatus(ProductStatus.AUCTIONFAIL);
                 }
 
+            }
+
+            if (auction.getStatus() == AuctionStatus.WaitingConfirm) {
+                Duration durationSinceEnd = Duration.between(endTime, now);
+                if (durationSinceEnd.toDays() >= 2) {
+                    auction.setStatus(AuctionStatus.WaitingPay);
+                }
+            }
+
+            if (auction.getStatus() == AuctionStatus.WaitingPay) {
+                Duration durationSinceEnd = Duration.between(endTime, now);
+                if (durationSinceEnd.toDays() >= 7) {
+                    auction.setStatus(AuctionStatus.Fail);
+                    product.setStatus(ProductStatus.AUCTIONFAIL);
+                }
             }
             productRepository.save(product);
             auctionRepository.save(auction);
