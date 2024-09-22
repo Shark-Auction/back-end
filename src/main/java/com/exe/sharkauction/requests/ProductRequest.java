@@ -30,6 +30,6 @@ public class ProductRequest {
 
     private boolean buyNow;
 
-    private String delivery_method;
+    private String deliveryMethod;
 
 }
