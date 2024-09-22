@@ -6,10 +6,7 @@ import com.exe.sharkauction.components.configurations.AppProperties;
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.mappers.IUserMapper;
 import com.exe.sharkauction.models.UserEntity;
-import com.exe.sharkauction.requests.UserForgotPasswordRequest;
-import com.exe.sharkauction.requests.UserRefreshRequest;
-import com.exe.sharkauction.requests.UserSignInRequest;
-import com.exe.sharkauction.requests.UserSignUpRequest;
+import com.exe.sharkauction.requests.*;
 import com.exe.sharkauction.responses.RefreshResponse;
 import com.exe.sharkauction.responses.SignInResponse;
 import com.exe.sharkauction.responses.UserProfileResponse;
@@ -94,7 +91,15 @@ public class UserController {
             @RequestBody UserForgotPasswordRequest request
     ){
         userService.setPassword(userId, token, request);
-        return CoreApiResponse.success("Successfully!");
+        return CoreApiResponse.success("Thay đổi mật khẩu thành công");
+    }
+
+    @PutMapping("/changepassword")
+    public CoreApiResponse<?> changePassword(
+            @RequestBody UserChangePasswordRequest request
+    ){
+        userService.changePassword(request);
+        return CoreApiResponse.success("Thay đổi mật khẩu thành công");
     }
 
     private boolean isValidToken(String token) {

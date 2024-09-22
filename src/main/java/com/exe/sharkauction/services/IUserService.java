@@ -1,6 +1,7 @@
 package com.exe.sharkauction.services;
 
 import com.exe.sharkauction.models.UserEntity;
+import com.exe.sharkauction.requests.UserChangePasswordRequest;
 import com.exe.sharkauction.requests.UserForgotPasswordRequest;
 import com.exe.sharkauction.requests.UserSignInRequest;
 import com.exe.sharkauction.requests.UserSignUpRequest;
@@ -22,4 +23,6 @@ public interface IUserService {
     void checkEmail(String email);
 
     UserEntity getUserProfile();
+
+    void changePassword(UserChangePasswordRequest request);
 }

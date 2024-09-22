@@ -10,6 +10,7 @@ import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.repositories.IRoleRepository;
 import com.exe.sharkauction.repositories.ITokenRepository;
 import com.exe.sharkauction.repositories.IUserRepository;
+import com.exe.sharkauction.requests.UserChangePasswordRequest;
 import com.exe.sharkauction.requests.UserForgotPasswordRequest;
 import com.exe.sharkauction.requests.UserSignInRequest;
 import com.exe.sharkauction.requests.UserSignUpRequest;
@@ -198,12 +199,31 @@ public class UserService implements IUserService {
         applicationEventPublisher.publishEvent(new MailEvent(this, user, url, "verify"));
     }
 
+    @Override
     public UserEntity getUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
         return user;
     }
+    @Override
+    public void changePassword(UserChangePasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Mật khẩu cũ không chính xác");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmedPassword())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Mật khẩu mới và mật khẩu xác nhận không khớp");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 
 
 }
