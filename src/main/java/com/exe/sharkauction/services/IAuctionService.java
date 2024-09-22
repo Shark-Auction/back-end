@@ -42,4 +42,6 @@ public interface IAuctionService {
     AuctionEntity reAuction(long id, UpdateTimeAuctionRequest request);
 
     List<AuctionEntity> getAuctionsBySellerId(Long sellerId);
+
+    void comfirmAuctionForSeller(long id);
 }

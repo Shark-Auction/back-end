@@ -20,4 +20,6 @@ public class OrderRequest {
 
 
     private String toAddress;
+
+    private String type;
 }

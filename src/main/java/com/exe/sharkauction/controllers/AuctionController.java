@@ -148,4 +148,12 @@ public class AuctionController {
     public List<AuctionEntity> getAuctionsBySellerId(@PathVariable Long sellerId) {
         return auctionService.getAuctionsBySellerId(sellerId);
     }
+
+    @PutMapping("/confirm/{id}")
+    public CoreApiResponse<?> confirmAuctions(
+            @PathVariable Long id
+    ){
+        auctionService.comfirmAuctionForSeller(id);
+        return CoreApiResponse.success("Confirm auction successfully");
+    }
 }

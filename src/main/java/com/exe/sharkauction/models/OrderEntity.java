@@ -2,6 +2,7 @@ package com.exe.sharkauction.models;
 
 import com.exe.sharkauction.models.enums.DeliveryMethod;
 import com.exe.sharkauction.models.enums.OrderStatus;
+import com.exe.sharkauction.models.enums.OrderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,10 @@ public class OrderEntity extends BaseEntity{
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private OrderType type;
 
     private float price;
 

@@ -271,7 +271,7 @@ public class AuctionService implements IAuctionService {
         if (!auction.getProduct().getSeller().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
-        ProductEntity jewelry = auction.getProduct();
+        ProductEntity product = auction.getProduct();
 
         validateAuctionDuration(request.getStartTime(), request.getEndTime());
 
@@ -279,15 +279,37 @@ public class AuctionService implements IAuctionService {
             throw new AppException(HttpStatus.BAD_REQUEST, "Thời gian bắt đầu phải sau thời gian tạo ít nhất 2 phút.");
         }
 
-        auction.setCurrentPrice(jewelry.getStartingPrice());
+        auction.setCurrentPrice(product.getStartingPrice());
         auction.setStartTime(request.getStartTime());
         auction.setEndTime(request.getEndTime());
         auction.setStatus(AuctionStatus.Waiting);
+        product.setFinalPrice(0f);
+        productRepository.save(product);
 
         return auctionRepository.save(auction);
     }
 
+    @Override
     public List<AuctionEntity> getAuctionsBySellerId(Long sellerId) {
         return auctionRepository.findAuctionsBySellerId(sellerId);
+    }
+
+    @Override
+    public void comfirmAuctionForSeller(long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
+        AuctionEntity auction = auctionRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Cuộc đấu giá không tồn tại"));
+
+        if (auction.getStatus() != AuctionStatus.WaitingConfirm) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Cuộc đấu giá không trong trạng thái đợi xác nhận");
+        }
+        if (!auction.getProduct().getSeller().getId().equals(user.getId())) {
+            throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
+        }
+        auction.setStatus(AuctionStatus.Completed);
+
+        auctionRepository.save(auction);
     }
 }

@@ -4,6 +4,7 @@ public enum AuctionStatus {
     Waiting,
     InProgress,
     Completed,
+    WaitingConfirm,
     Cancel,
     Fail,
     WaitingPay

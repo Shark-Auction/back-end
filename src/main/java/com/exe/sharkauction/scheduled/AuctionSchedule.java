@@ -40,9 +40,13 @@ public class AuctionSchedule {
 
             if (auction.getStatus() == AuctionStatus.InProgress && endTime.isBefore(now)) {
                 if (auction.getWinner() != null) {
-                    auction.setStatus(AuctionStatus.Completed);
-                    product.setStatus(ProductStatus.AUCTIONSUCCESS);
-                    product.setFinalPrice(auction.getCurrentPrice());
+                    if (product.getFinalPrice() < product.getDesiredPrice()) {
+                        auction.setStatus(AuctionStatus.WaitingConfirm);
+                        product.setStatus(ProductStatus.AUCTIONSUCCESS);
+                    } else {
+                        auction.setStatus(AuctionStatus.Completed);
+                        product.setStatus(ProductStatus.AUCTIONSUCCESS);
+                    }
                 }
                 else {
                     auction.setStatus(AuctionStatus.Fail);

@@ -6,6 +6,7 @@ import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.models.enums.OrderStatus;
+import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.ProductStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
@@ -30,6 +31,7 @@ public class OrderService implements IOrderService {
     private final IProductRepository productRepository;
     @Override
     public OrderEntity createOrder(OrderEntity order) {
+        // Lấy thông tin người dùng hiện tại
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
@@ -37,15 +39,26 @@ public class OrderService implements IOrderService {
         ProductEntity product = productRepository.findById(order.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại"));
 
-        if (product.isBuyNow()) {
-            order.setPrice(product.getBuyNowPrice());
-            product.setStatus(ProductStatus.SOLD);
-        } else {
+        boolean productExistsInOrder = orderRepository.existsByProduct(product);
+        if (productExistsInOrder) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm này đã tồn tại trong đơn hàng khác.");
+        }
+
+        if (order.getType() == OrderType.BuyNow) {
+            if (product.isBuyNow()) {
+                order.setPrice(product.getBuyNowPrice());
+                product.setStatus(ProductStatus.SOLD);
+            } else {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm này không hỗ trợ mua ngay.");
+            }
+        } else if (order.getType() == OrderType.Auction) {
             if (product.getStatus() == ProductStatus.AUCTIONSUCCESS) {
                 order.setPrice(product.getFinalPrice());
             } else {
-                throw new AppException(HttpStatus.BAD_REQUEST,"Sản phẩm không thể đặt hàng vì không đạt yêu cầu.");
+                throw new AppException(HttpStatus.BAD_REQUEST, "Không thể đặt hàng vì cuộc đấu giá chưa hoàn thành");
             }
+        } else {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Loại đơn hàng không hợp lệ.");
         }
 
         order.setBuyer(user);
@@ -54,6 +67,7 @@ public class OrderService implements IOrderService {
 
         return orderRepository.save(order);
     }
+
     @Override
     public List<OrderEntity> getListOrder(){
         return orderRepository.findAll();
