@@ -68,6 +68,7 @@ public class ProductService implements IProductService {
         product.setOrigin(existingOrigin);
         product.setSeller(user);
         product.setStatus(ProductStatus.PENDING);
+        product.setFinalPrice(0f);
 
         if (imageFile != null && !imageFile.isEmpty()) {
             product.setThumbnail(UploadImagesUtils.storeFile(imageFile, ImageContants.PRODUCT_IMAGE_PATH));
