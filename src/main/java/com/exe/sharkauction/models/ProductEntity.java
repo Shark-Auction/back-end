@@ -1,5 +1,6 @@
 package com.exe.sharkauction.models;
 
+import com.exe.sharkauction.models.enums.DeliveryMethod;
 import com.exe.sharkauction.models.enums.ProductCondition;
 import com.exe.sharkauction.models.enums.ProductStatus;
 import jakarta.persistence.*;
@@ -16,13 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 
-public class ProductEntity extends BaseEntity {  // Đảm bảo tên lớp cơ sở là BaseEntity
+public class ProductEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")  // Đảm bảo tên cột trong cơ sở dữ liệu khớp
+    @JoinColumn(name = "seller_id")
     private UserEntity seller;
 
     private String name;
@@ -48,6 +49,12 @@ public class ProductEntity extends BaseEntity {  // Đảm bảo tên lớp cơ 
 
     private float startingPrice;
 
+    private float buyNowPrice;
+
+    private float finalPrice;
+
+    private float desiredPrice;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status")
     private ProductStatus status;
@@ -57,4 +64,10 @@ public class ProductEntity extends BaseEntity {  // Đảm bảo tên lớp cơ 
 
     @Column(name = "thumbnail", length = 300)
     private String thumbnail;
+
+    @Column(name = "delivery_method")
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
+
+    private boolean buyNow;
 }

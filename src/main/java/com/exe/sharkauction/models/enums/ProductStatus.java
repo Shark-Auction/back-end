@@ -6,8 +6,11 @@ public enum ProductStatus {
     SCHEDULING,
     AUCTIONING,
     AUCTIONSUCCESS,
+
     DELIVERING,
     DELIVERED,
-    AUCTIONFAIL
+    AUCTIONFAIL,
+
+    SOLD
 
 }

@@ -22,7 +22,14 @@ public class ProductRequest {
 
     private float startingPrice;
 
+    private float buyNowPrice;
+
+    private float desiredPrice;
+
     private String condition;
 
+    private boolean buyNow;
+
+    private String delivery_method;
 
 }

@@ -68,7 +68,7 @@ public class AuctionService implements IAuctionService {
         if (!activeAuctions.isEmpty()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm đã có phiên đấu giá.");
         }
-        existingProduct.setStatus(ProductStatus.AUCTIONING);
+        existingProduct.setStatus(ProductStatus.SCHEDULING);
         auction.setCurrentPrice(existingProduct.getStartingPrice());
         auction.setProduct(existingProduct);
         auction.setStatus(AuctionStatus.Waiting);

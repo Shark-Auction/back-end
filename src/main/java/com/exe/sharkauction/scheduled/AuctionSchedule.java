@@ -32,6 +32,7 @@ public class AuctionSchedule {
             LocalDateTime endTime = LocalDateTime.ofInstant(auction.getEndTime().toInstant(), ZoneId.systemDefault());
 
             if (auction.getStatus() == AuctionStatus.Waiting && startTime.isBefore(now)) {
+                product.setStatus(ProductStatus.AUCTIONING);
                 auction.setStatus(AuctionStatus.InProgress);
                 auctionRepository.save(auction);
 
@@ -41,6 +42,7 @@ public class AuctionSchedule {
                 if (auction.getWinner() != null) {
                     auction.setStatus(AuctionStatus.Completed);
                     product.setStatus(ProductStatus.AUCTIONSUCCESS);
+                    product.setFinalPrice(auction.getCurrentPrice());
                 }
                 else {
                     auction.setStatus(AuctionStatus.Fail);
