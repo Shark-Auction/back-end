@@ -103,13 +103,6 @@ public class ProductService implements IProductService {
     }
 
 
-
-
-
-
-
-
-
     @Override
     public ProductEntity updateProduct(long productId, ProductRequest request) {
         ProductEntity existingProduct = getProductById(productId);
@@ -132,6 +125,9 @@ public class ProductService implements IProductService {
             OriginEntity existingOrigin = originRepository
                     .findByName(request.getOriginName());
             existingProduct.setOrigin(existingOrigin);
+        }
+        if (request.getBuyNow()!= null) {
+            existingProduct.setBuyNow(request.getBuyNow());
         }
 
         return productRepository.save(existingProduct);

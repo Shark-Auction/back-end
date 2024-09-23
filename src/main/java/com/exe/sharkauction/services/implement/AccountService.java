@@ -111,6 +111,17 @@ public class AccountService implements IAccountService {
         return userRepository.save(existingUser);
     }
 
+
+    @Override
+    public UserEntity unbanUser(Long id) {
+        UserEntity existingUser = userRepository
+                .findById(id)
+                .orElseThrow(()
+                        -> new DataNotFoundException("User", "id", id));
+        existingUser.setIs_active(true);
+        return userRepository.save(existingUser);
+    }
+
     @Override
     public List<UserEntity> getStaff() {
         Long fixedRoleId = 3L;

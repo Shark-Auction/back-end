@@ -20,6 +20,8 @@ public interface IAccountService {
 
     UserEntity banUser(Long id);
 
+    UserEntity unbanUser(Long id);
+
     List<UserEntity> getStaff();
 
     List<UserEntity> getShipper();

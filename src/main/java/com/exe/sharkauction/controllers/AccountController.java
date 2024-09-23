@@ -80,6 +80,11 @@ public class AccountController {
         return CoreApiResponse.success(accountService.banUser(id));
     }
 
+    @PutMapping("/{id}/unban")
+    public CoreApiResponse<UserEntity> unbanUser(@PathVariable Long id) {
+        return CoreApiResponse.success(accountService.unbanUser(id));
+    }
+
     @GetMapping("/roles")
     public CoreApiResponse<List<RoleEntity>> getAllRoles() {
         return CoreApiResponse.success(accountService.getAllRoles());

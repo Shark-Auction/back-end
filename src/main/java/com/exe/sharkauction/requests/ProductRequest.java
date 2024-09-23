@@ -28,7 +28,7 @@ public class ProductRequest {
 
     private String condition;
 
-    private boolean buyNow;
+    private Boolean buyNow;
 
     private String deliveryMethod;
 
