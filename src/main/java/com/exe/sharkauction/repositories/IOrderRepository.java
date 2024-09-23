@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("SELECT o FROM OrderEntity o WHERE o.buyer = :buyer")
@@ -18,4 +19,7 @@ public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrderEntity o WHERE o.product = :product")
     boolean existsByProduct(@Param("product") ProductEntity product);
+
+//    @Query("SELECT o FROM OrderEntity o WHERE o.product.id = :productId")
+//    OrderEntity findFirstByProductId(Long productId);
 }

@@ -1,9 +1,9 @@
 package com.exe.sharkauction.models.enums;
 
 public enum ViolateStatus {
-    PENDING,
-    RESOLVED,
-    PENALIZED
+    PENDING,         // Đang xử lý
+    RESOLVED,        // Đã xử lý
+    PENALIZED        // Đã phạt
 
 
 }

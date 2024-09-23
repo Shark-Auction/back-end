@@ -2,10 +2,11 @@ package com.exe.sharkauction.scheduled;
 
 import com.exe.sharkauction.models.AuctionEntity;
 import com.exe.sharkauction.models.ProductEntity;
-import com.exe.sharkauction.models.enums.AuctionStatus;
-import com.exe.sharkauction.models.enums.ProductStatus;
+import com.exe.sharkauction.models.ViolateEntity;
+import com.exe.sharkauction.models.enums.*;
 import com.exe.sharkauction.repositories.IAuctionRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
+import com.exe.sharkauction.repositories.IViolateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 public class AuctionSchedule {
     private final IAuctionRepository auctionRepository;
     private final IProductRepository productRepository;
+    private final IViolateRepository violateRepository;
 
     @Scheduled(fixedRate = 3000)
     public void updateStatusAuction() {
@@ -58,8 +60,10 @@ public class AuctionSchedule {
 
             if (auction.getStatus() == AuctionStatus.WaitingConfirm) {
                 Duration durationSinceEnd = Duration.between(endTime, now);
-                if (durationSinceEnd.toDays() >= 2) {
-                    auction.setStatus(AuctionStatus.WaitingPay);
+                if (durationSinceEnd.toDays() >= 3) {
+                    auction.setStatus(AuctionStatus.Cancel);
+                    product.setStatus(ProductStatus.AUCTIONFAIL);
+
                 }
             }
 
@@ -68,8 +72,15 @@ public class AuctionSchedule {
                 if (durationSinceEnd.toDays() >= 7) {
                     auction.setStatus(AuctionStatus.Fail);
                     product.setStatus(ProductStatus.AUCTIONFAIL);
+                    ViolateEntity violate = new ViolateEntity();
+                    violate.setUser(auction.getWinner());
+                    violate.setType(ViolateType.non_payment);
+                    violate.setDescription("Bạn chưa thanh toán đơn hàng đúng hạn");
+                    violate.setStatus(ViolateStatus.PENALIZED);
+                    violateRepository.save(violate);
                 }
             }
+
             productRepository.save(product);
             auctionRepository.save(auction);
         }

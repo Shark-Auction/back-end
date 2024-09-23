@@ -63,4 +63,7 @@ public interface IAuctionRepository extends JpaRepository<AuctionEntity, Long> {
     @Query("SELECT a FROM AuctionEntity a WHERE a.product.seller.id = :sellerId")
     List<AuctionEntity> findAuctionsBySellerId(@Param("sellerId") Long sellerId);
 
+    @Query("SELECT a FROM AuctionEntity a WHERE a.product.id = :productId")
+    AuctionEntity findFirstByProductId(Long productId);
+
 }

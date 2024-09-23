@@ -2,12 +2,15 @@ package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
+import com.exe.sharkauction.models.AuctionEntity;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.UserEntity;
+import com.exe.sharkauction.models.enums.AuctionStatus;
 import com.exe.sharkauction.models.enums.OrderStatus;
 import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.ProductStatus;
+import com.exe.sharkauction.repositories.IAuctionRepository;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
 import com.exe.sharkauction.repositories.IUserRepository;
@@ -29,15 +32,18 @@ public class OrderService implements IOrderService {
     private final IUserRepository userRepository;
 
     private final IProductRepository productRepository;
+
+    private final IAuctionRepository auctionRepository;
     @Override
     public OrderEntity createOrder(OrderEntity order) {
-        // Lấy thông tin người dùng hiện tại
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
 
         ProductEntity product = productRepository.findById(order.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại"));
+
+        AuctionEntity auction = auctionRepository.findFirstByProductId(product.getId());
 
         boolean productExistsInOrder = orderRepository.existsByProduct(product);
         if (productExistsInOrder) {
@@ -48,12 +54,14 @@ public class OrderService implements IOrderService {
             if (product.isBuyNow()) {
                 order.setPrice(product.getBuyNowPrice());
                 product.setStatus(ProductStatus.SOLD);
+                auction.setStatus(AuctionStatus.Completed);
             } else {
                 throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm này không hỗ trợ mua ngay.");
             }
         } else if (order.getType() == OrderType.Auction) {
             if (product.getStatus() == ProductStatus.AUCTIONSUCCESS) {
                 order.setPrice(product.getFinalPrice());
+                auction.setStatus(AuctionStatus.Completed);
             } else {
                 throw new AppException(HttpStatus.BAD_REQUEST, "Không thể đặt hàng vì cuộc đấu giá chưa hoàn thành");
             }
