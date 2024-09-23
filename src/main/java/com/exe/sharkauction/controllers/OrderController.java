@@ -32,13 +32,13 @@ public class OrderController  {
         List<OrderEntity> listOrder = orderService.getListOrder();
         return CoreApiResponse.success(listOrder);
     }
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public CoreApiResponse<OrderEntity> getOrderById(@Valid @PathVariable Long id){
         OrderEntity order = orderService.getOrderByIdUser(id);
         return CoreApiResponse.success(order);
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @GetMapping("admin/{id}")
     public CoreApiResponse<OrderEntity> getOrderByIdAdmin(@Valid @PathVariable Long id){
         OrderEntity order = orderService.getOrderById(id);
@@ -57,19 +57,19 @@ public class OrderController  {
         List<OrderEntity> listOrder = orderService.getOrdersBySeller();
         return CoreApiResponse.success(listOrder);
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("delivered/{id}")
     public CoreApiResponse<?> deliveredProduct(@PathVariable Long id){
         orderService.updateDeliveredProduct(id);
         return CoreApiResponse.success("Cập nhật đơn hàng thành công ");
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("sent/{id}")
     public CoreApiResponse<?> sentProduct(@PathVariable Long id){
         orderService.updateSentProduct(id);
         return CoreApiResponse.success("Cập nhật đơn hàng thành công ");
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("received/{id}")
     public CoreApiResponse<?> receivedProduct(@PathVariable Long id){
         orderService.updateReceivedProduct(id);

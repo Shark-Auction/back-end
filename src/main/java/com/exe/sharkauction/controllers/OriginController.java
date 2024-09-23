@@ -6,6 +6,7 @@ import com.exe.sharkauction.requests.OriginRequest;
 import com.exe.sharkauction.services.IOriginService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static com.exe.sharkauction.mappers.IOriginMapper.INSTANCE;
 @RequiredArgsConstructor
 public class OriginController {
     private final IOriginService originService;
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PostMapping("")
     public CoreApiResponse<OriginEntity> createOrigin(
             @Valid @RequestBody OriginRequest originRequest
@@ -35,7 +37,7 @@ public class OriginController {
         OriginEntity origin = originService.getOriginById(id);
         return CoreApiResponse.success(origin);
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PutMapping("/{id}")
     public CoreApiResponse<OriginEntity> updateOrigin(
             @PathVariable Long id,
@@ -44,7 +46,7 @@ public class OriginController {
         OriginEntity updateOrigin = originService.updateOrigin(id, INSTANCE.toModel(originRequest));
         return CoreApiResponse.success(updateOrigin, "Cập nhật nguồn gốc thành công");
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @DeleteMapping("/{id}")
     public CoreApiResponse<?> deleteOrigin(
             @PathVariable Long id

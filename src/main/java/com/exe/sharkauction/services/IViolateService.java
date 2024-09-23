@@ -15,4 +15,6 @@ public interface IViolateService {
     List<ViolateEntity> getViolateByUserId(long userId);
 
     void deleteViolate(long id);
+
+    List<ViolateEntity> getViolateMyViolate();
 }

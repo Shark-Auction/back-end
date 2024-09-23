@@ -6,6 +6,7 @@ import com.exe.sharkauction.requests.BrandRequest;
 import com.exe.sharkauction.services.IBrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import static com.exe.sharkauction.mappers.IBrandMapper.INSTANCE;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrandController {
     private final IBrandService brandService;
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PostMapping("")
     public CoreApiResponse<BrandEntity> createBrand(
             @Valid @RequestBody BrandRequest brandRequest
@@ -36,6 +38,7 @@ public class BrandController {
         return CoreApiResponse.success(brand);
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PutMapping("/{id}")
     public CoreApiResponse<BrandEntity> updateBrand(
             @PathVariable Long id,
@@ -45,6 +48,7 @@ public class BrandController {
         return CoreApiResponse.success(updateBrand, "Cập nhật nhãn hàng thành công");
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @DeleteMapping("/{id}")
     public CoreApiResponse<?> deleteBrand(
             @PathVariable Long id

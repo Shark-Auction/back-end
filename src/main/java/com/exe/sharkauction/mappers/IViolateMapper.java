@@ -1,8 +1,6 @@
 package com.exe.sharkauction.mappers;
 
-import com.exe.sharkauction.models.BiddingEntity;
 import com.exe.sharkauction.models.ViolateEntity;
-import com.exe.sharkauction.requests.BidRequest;
 import com.exe.sharkauction.requests.ViolateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

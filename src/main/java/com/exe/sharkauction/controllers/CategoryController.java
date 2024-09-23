@@ -7,6 +7,7 @@ import com.exe.sharkauction.responses.CategoryResponse;
 import com.exe.sharkauction.services.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +21,7 @@ import static com.exe.sharkauction.mappers.ICategoryMapper.INSTANCE;
 @RequiredArgsConstructor
 public class CategoryController {
     private final ICategoryService categoryServices;
-
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PostMapping("")
     public CoreApiResponse<CategoryEntity> createCategory(
             @Valid @ModelAttribute CategoryRequest categoryRequest,
@@ -41,7 +42,7 @@ public class CategoryController {
         CategoryEntity material = categoryServices.getCategoryById(id);
         return CoreApiResponse.success(material);
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @PutMapping("/{id}")
     public CoreApiResponse<CategoryEntity> updateMaterial(
             @PathVariable Long id,
@@ -52,7 +53,7 @@ public class CategoryController {
         CategoryEntity updateCategory = categoryServices.updateCategory(id, INSTANCE.toModel(categoryRequest),imageThumbnail);
         return CoreApiResponse.success(updateCategory, "Cập nhật danh mục thành công");
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF','ADMIN')")
     @DeleteMapping("/{id}")
     public CoreApiResponse<?> deleteCategory(
             @PathVariable Long id
