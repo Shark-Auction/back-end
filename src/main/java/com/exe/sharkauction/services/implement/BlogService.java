@@ -10,6 +10,7 @@ import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.repositories.IBlogImageRepository;
 import com.exe.sharkauction.repositories.IBlogRepository;
 import com.exe.sharkauction.requests.BlogRequest;
+import com.exe.sharkauction.services.IBlogService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
