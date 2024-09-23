@@ -146,7 +146,7 @@ public class AuctionService implements IAuctionService {
         AuctionEntity auction = auctionRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Phiên đấu giá không tồn tại"));
 
-        if (auction.getStatus() != AuctionStatus.Waiting && auction.getStatus() != AuctionStatus.WaitingPay) {
+        if (auction.getStatus() != AuctionStatus.Waiting && auction.getStatus() != AuctionStatus.WaitingConfirm) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Sản phẩm đang được đấu giá không thể huỷ");
         }
         if (!auction.getProduct().getSeller().getId().equals(user.getId())) {

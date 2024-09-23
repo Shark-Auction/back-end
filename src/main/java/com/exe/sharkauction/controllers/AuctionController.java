@@ -30,7 +30,7 @@ public class AuctionController {
             @Valid @RequestBody AuctionRequest auctionRequest
     ){
         AuctionEntity auction = auctionService.createAuction(INSTANCE.toModel(auctionRequest));
-        return CoreApiResponse.success(auction,"Insert auction successfully");
+        return CoreApiResponse.success(auction,"Tạo cuộc đấu giá thành công");
     }
 
     @GetMapping("")
@@ -49,7 +49,7 @@ public class AuctionController {
     @PutMapping("/time/{id}")
     public CoreApiResponse<AuctionEntity> updateTime(@PathVariable Long id, @RequestBody UpdateTimeAuctionRequest request) {
         AuctionEntity updatedAuction = auctionService.updateTime(id, request);
-        return CoreApiResponse.success(updatedAuction,"Update auction successfully");
+        return CoreApiResponse.success(updatedAuction,"Cập nhật đấu giá thành công");
     }
 
     @GetMapping("/category/{categoryId}")
@@ -110,7 +110,7 @@ public class AuctionController {
             @PathVariable Long id
     ){
         auctionService.cancelAuction(id);
-        return CoreApiResponse.success("Cancel auction successfully");
+        return CoreApiResponse.success("Huỷ đấu giá thành công");
     }
 
 
@@ -141,7 +141,7 @@ public class AuctionController {
     @PutMapping("/reAuction/{id}")
     public CoreApiResponse<AuctionEntity> reAuction(@PathVariable Long id, @RequestBody UpdateTimeAuctionRequest request) {
         AuctionEntity updatedAuction = auctionService.reAuction(id, request);
-        return CoreApiResponse.success(updatedAuction,"Update auction successfully");
+        return CoreApiResponse.success(updatedAuction,"Cập nhật đấu giá thành công");
     }
 
     @GetMapping("/seller/{sellerId}")
@@ -154,6 +154,6 @@ public class AuctionController {
             @PathVariable Long id
     ){
         auctionService.comfirmAuctionForSeller(id);
-        return CoreApiResponse.success("Confirm auction successfully");
+        return CoreApiResponse.success("Xác nhận cuộc đấu giá thành công");
     }
 }

@@ -4,10 +4,7 @@ import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.requests.CreateAccountRequest;
 import com.exe.sharkauction.requests.UpdateUserRequest;
 import com.exe.sharkauction.responses.UserProfileResponse;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -22,5 +19,6 @@ public interface IUserMapper {
 //    void updatePersonalFromRequest(PersonalUpdateRequest updateRequest, @MappingTarget UserEntity user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "roleId", target = "role_id.id")
     void updateUserFromRequest(UpdateUserRequest updateRequest, @MappingTarget UserEntity user);
 }
