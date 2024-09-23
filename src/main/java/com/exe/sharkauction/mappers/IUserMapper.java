@@ -19,6 +19,6 @@ public interface IUserMapper {
 //    void updatePersonalFromRequest(PersonalUpdateRequest updateRequest, @MappingTarget UserEntity user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "roleId", target = "role_id.id")
+//    @Mapping(source = "roleId", target = "role_id.id")
     void updateUserFromRequest(UpdateUserRequest updateRequest, @MappingTarget UserEntity user);
 }

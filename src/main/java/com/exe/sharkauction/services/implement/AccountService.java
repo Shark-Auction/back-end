@@ -3,6 +3,7 @@ package com.exe.sharkauction.services.implement;
 import com.exe.sharkauction.components.constants.ImageContants;
 import com.exe.sharkauction.components.exceptions.DataNotFoundException;
 import com.exe.sharkauction.mappers.IUserMapper;
+import com.exe.sharkauction.models.OriginEntity;
 import com.exe.sharkauction.models.RoleEntity;
 import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.repositories.IRoleRepository;
@@ -81,12 +82,12 @@ public class AccountService implements IAccountService {
 
         userMapper.updateUserFromRequest(update, existingUser);
 
-        if (update.getRoleId() != null && !update.getRoleId().equals(existingUser.getRole_id().getId())) {
-            RoleEntity role = roleRepository
+        if (update.getRoleId() != null && (existingUser.getRole_id() == null || !existingUser.getRole_id().getId().equals(update.getRoleId()))) {
+            RoleEntity newRole = roleRepository
                     .findById(update.getRoleId())
                     .orElseThrow(() -> new DataNotFoundException("Role", "id", update.getRoleId()));
 
-            existingUser.setRole_id(role);
+            existingUser.setRole_id(newRole);
         }
 
         if (update.getPassword() != null) {
@@ -95,6 +96,7 @@ public class AccountService implements IAccountService {
 
         return userRepository.save(existingUser);
     }
+
 
     @Override
     public List<UserEntity> getAllUser() {
