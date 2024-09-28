@@ -124,6 +124,8 @@ public class OrderService implements IOrderService {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.shipping);
+        orderRepository.save(order);
+
     }
 
     @Override
@@ -137,6 +139,8 @@ public class OrderService implements IOrderService {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.delivered);
+        orderRepository.save(order);
+
     }
     @Override
     public void updateReceivedProduct(long id){
@@ -149,5 +153,7 @@ public class OrderService implements IOrderService {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.received);
+
+        orderRepository.save(order);
     }
 }
