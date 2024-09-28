@@ -120,7 +120,7 @@ public class OrderService implements IOrderService {
         UserEntity user = userPrincipal.getUser();
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không tồn tại"));
-        if (order.getProduct().getSeller().getId().equals(user.getId())) {
+        if (!order.getProduct().getSeller().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.shipping);
@@ -133,7 +133,7 @@ public class OrderService implements IOrderService {
         UserEntity user = userPrincipal.getUser();
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không tồn tại"));
-        if (order.getProduct().getSeller().getId().equals(user.getId())) {
+        if (!order.getProduct().getSeller().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.delivered);
@@ -145,7 +145,7 @@ public class OrderService implements IOrderService {
         UserEntity user = userPrincipal.getUser();
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không tồn tại"));
-        if (order.getBuyer().getId().equals(user.getId())) {
+        if (!order.getBuyer().getId().equals(user.getId())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.received);
