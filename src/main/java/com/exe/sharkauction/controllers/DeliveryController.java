@@ -10,12 +10,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("${app.api.version.v1}/delivery")
 @RequiredArgsConstructor
 public class DeliveryController {
     private final IDeliveryService deliveryService;
+
+    @GetMapping("")
+    public CoreApiResponse<List<DeliveryEntity>> getDeliveries(){
+        return CoreApiResponse.success(deliveryService.getDeliveries());
+    }
+
+    @GetMapping("/{id}")
+    public CoreApiResponse<DeliveryEntity> getDelivery(
+            @Valid @PathVariable Long id
+    ){
+        return CoreApiResponse.success(deliveryService.getDelivery(id));
+    }
 
     @PostMapping("/receiver")
     public CoreApiResponse<DeliveryEntity> insertReceiverInformation(

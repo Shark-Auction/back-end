@@ -4,6 +4,8 @@ import com.exe.sharkauction.models.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "deliveries")
 @Data
@@ -17,6 +19,7 @@ public class DeliveryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String orderCode;
 
     // Receiver Information
     private int paymentTypeId;
@@ -47,4 +50,6 @@ public class DeliveryEntity {
     private String returnAddress;
 
     private DeliveryStatus status;
+
+    private List<Object> deliveryStatus;
 }
