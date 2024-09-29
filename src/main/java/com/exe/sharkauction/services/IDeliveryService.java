@@ -11,4 +11,6 @@ public interface IDeliveryService {
     public DeliveryEntity updateSenderDelivery(Long id, DeliverySenderRequest senderRequest) throws Exception;
     public DeliveryEntity getDelivery(Long id);
     public List<DeliveryEntity> getDeliveries();
+    public List<DeliveryEntity> getMyDeliveriesSender();
+    public List<DeliveryEntity> getMyDeliveriesReceiver();
 }
