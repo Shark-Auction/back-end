@@ -7,6 +7,7 @@ import com.exe.sharkauction.requests.DeliveryReceiverRequest;
 import com.exe.sharkauction.services.IDeliveryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class DeliveryController {
     }
 
     @PostMapping("/receiver")
+    @PreAuthorize("hasRole('USER')")
     public CoreApiResponse<DeliveryEntity> insertReceiverInformation(
             @Valid @RequestBody DeliveryReceiverRequest receiverRequest
     ) throws IOException {
@@ -39,11 +41,26 @@ public class DeliveryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public CoreApiResponse<DeliveryEntity> insertSenderInformation(
             @Valid @PathVariable Long id,
             @Valid @RequestBody DeliverySenderRequest senderRequest
     ) throws Exception {
         DeliveryEntity updatedEntity = deliveryService.updateSenderDelivery(id, senderRequest);
         return CoreApiResponse.success(updatedEntity,"Thêm thông tin mới thành công");
+    }
+
+    @GetMapping("/receiver/me")
+    @PreAuthorize("hasRole('USER')")
+    public CoreApiResponse<List<DeliveryEntity>> getMyDeliveriesReceiver(){
+        List<DeliveryEntity> deliveryEntities = deliveryService.getMyDeliveriesReceiver();
+        return CoreApiResponse.success(deliveryEntities, "Lấy thông tin thành công");
+    }
+
+    @GetMapping("/sender/me")
+    @PreAuthorize("hasRole('USER')")
+    public CoreApiResponse<List<DeliveryEntity>> getMyDeliveriesSender(){
+        List<DeliveryEntity> deliveryEntities = deliveryService.getMyDeliveriesSender();
+        return CoreApiResponse.success(deliveryEntities, "Lấy thông tin thành công");
     }
 }

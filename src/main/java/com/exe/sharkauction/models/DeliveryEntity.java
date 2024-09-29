@@ -22,6 +22,9 @@ public class DeliveryEntity {
     private String orderCode;
 
     // Receiver Information
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private UserEntity receiver;
     private int paymentTypeId;
     private int serviceTypeId;
     private String fromName;
@@ -33,6 +36,9 @@ public class DeliveryEntity {
     private Long productId; // Will be updated in step 2
 
     // Sender Information
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private UserEntity sender;
     private String toName;
     private String toPhone;
     private String toAddress;
