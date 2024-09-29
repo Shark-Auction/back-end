@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class PaymentService implements IPaymentService {
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
-    private final String PARTNER_CODE = "SHARKAUTION";
+    private final String PARTNER_CODE = "Phuc0987";
     private String CANCEL_URL = "";
     private String RETURN_URL = "";
 
@@ -52,6 +53,7 @@ public class PaymentService implements IPaymentService {
 
         paymentEntity.setAmount((int)order.getPrice());
         paymentEntity.setDescription("O" + order.getId());
+        paymentEntity.setOrderCode(Integer.parseInt(String.valueOf(new Date().getTime()).substring(String.valueOf(new Date().getTime()).length() - 6)));
 
         paymentEntity = paymentRepository.save(paymentEntity);
 

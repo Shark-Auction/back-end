@@ -23,7 +23,7 @@ public class PaymentEntity {
     private Long id;
 
     @Column(nullable = false)
-    private int orderCode = Integer.parseInt(String.valueOf(new Date().getTime()).substring(String.valueOf(new Date().getTime()).length() - 6));
+    private int orderCode;
 
     @Column(nullable = false)
     private int amount;
