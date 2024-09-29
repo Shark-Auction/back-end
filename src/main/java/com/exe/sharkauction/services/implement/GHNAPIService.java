@@ -1,6 +1,8 @@
 package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.models.DeliveryEntity;
+import com.exe.sharkauction.models.enums.DeliveryStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,11 +11,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
-public class GHNAPIService{
-    private final String TOKEN = "43a8eec9-7b4c-11ef-b441-069be3e54cb9";
-    private final String SHOP_ID = "5347335";
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
-    public static void createShippingOrder(DeliveryEntity deliveryEntity) {
+public class GHNAPIService{
+    private static final String TOKEN = "43a8eec9-7b4c-11ef-b441-069be3e54cb9";
+    private static final String SHOP_ID = "5347335";
+
+    public static DeliveryEntity createShippingOrder(DeliveryEntity deliveryEntity) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create";
 
@@ -55,19 +61,71 @@ public class GHNAPIService{
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Token", "43a8eec9-7b4c-11ef-b441-069be3e54cb9");
-        headers.set("ShopId", "5347335");
+        headers.set("Token", TOKEN);
+        headers.set("ShopId", SHOP_ID);
 
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
             // Handle the response as needed
             System.out.println("Response: " + response.getBody());
+            JsonNode responseJson = mapper.readTree(response.getBody());
+
+            // Navigate to the "data" node and extract "order_code"
+            String orderCode = responseJson.path("data").path("order_code").asText();
+            deliveryEntity.setOrderCode(orderCode);
+            deliveryEntity.setStatus(DeliveryStatus.WAITING_RECEIVING);
+            System.out.println("Order Code: " + orderCode);
+            return deliveryEntity;
         } catch (HttpClientErrorException e) {
             System.err.println("HTTP Status Code: " + e.getStatusCode());
             System.err.println("Response Body: " + e.getResponseBodyAsString());
         } catch (Exception e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
+        return null;
+    }
+
+    public static DeliveryStatus getOrderStatus(String orderCode) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Token", TOKEN);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode request = mapper.createObjectNode();
+        request.put("order_code", orderCode);
+
+        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+            // Check if the response status is OK
+            if (response.getStatusCode() != HttpStatus.OK) {
+                System.err.println("Error: Unexpected status code " + response.getStatusCode());
+                return null; // Handle this accordingly
+            }
+
+            System.out.println("Response: " + response.getBody());
+            JsonNode responseJson = mapper.readTree(response.getBody());
+            JsonNode dataNode = responseJson.path("data");
+
+            // Check if data node exists
+            if (dataNode.isMissingNode()) {
+                System.err.println("Data field is missing in response");
+                return null; // Handle this accordingly
+            }
+
+            String deliveryStatusString = dataNode.path("status").asText();
+            return DeliveryStatus.fromString(deliveryStatusString);
+        } catch (HttpClientErrorException e) {
+            System.err.println("HTTP Status Code: " + e.getStatusCode());
+            System.err.println("Response Body: " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+        }
+
+        return null;
     }
 }

@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DeliveryService implements IDeliveryService {
@@ -58,13 +60,23 @@ public class DeliveryService implements IDeliveryService {
 
         try{
             updatedDelivery = deliveryRepository.save(updatedDelivery);
-            GHNAPIService.createShippingOrder(updatedDelivery);
-            updatedDelivery.setStatus(DeliveryStatus.WAITING_RECEIVING);
-            return updatedDelivery;
+            updatedDelivery = GHNAPIService.createShippingOrder(updatedDelivery);
+            return deliveryRepository.save(updatedDelivery);
         }
         catch (Exception ex){
             throw new Exception(ex);
         }
 
+    }
+
+    @Override
+    public DeliveryEntity getDelivery(Long id) {
+        return deliveryRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "This delivery is not existed!"));
+    }
+
+    @Override
+    public List<DeliveryEntity> getDeliveries() {
+        return deliveryRepository.findAll();
     }
 }
