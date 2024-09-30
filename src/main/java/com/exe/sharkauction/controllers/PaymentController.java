@@ -41,4 +41,23 @@ public class PaymentController {
         PaymentEntity payment = paymentService.returnValueOfPayment(paymentResponseRequest);
         return CoreApiResponse.success(payment, "");
     }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public CoreApiResponse<List<PaymentEntity>> getMyPayment(){
+        return CoreApiResponse.success(paymentService.getMyPayments());
+    }
+
+    @GetMapping("")
+    public CoreApiResponse<List<PaymentEntity>> getPayments(){
+        return CoreApiResponse.success(paymentService.getPayments());
+    }
+
+    @GetMapping("/{id}")
+    public CoreApiResponse<PaymentEntity> getPayment(
+            @Valid @RequestParam Long id
+    ){
+        return CoreApiResponse.success(paymentService.getPayments(id));
+    }
+
 }
