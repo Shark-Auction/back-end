@@ -1,5 +1,6 @@
 package com.exe.sharkauction.models;
 
+import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.requests.PaymentRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +25,7 @@ public class PaymentEntity {
 
     @Column(nullable = false)
     private int orderCode;
+    private String paymentID;
 
     @Column(nullable = false)
     private int amount;
@@ -39,7 +41,7 @@ public class PaymentEntity {
     @JoinColumn(name = "order_id")
     private OrderEntity orderEntity;
 
-    private String status;
+    private PaymentStatus status;
     private String checkoutUrl;
     private boolean senderTransaction;
 }

@@ -2,8 +2,10 @@ package com.exe.sharkauction.controllers;
 
 import com.exe.sharkauction.components.apis.CoreApiResponse;
 import com.exe.sharkauction.mappers.IPaymentMapper;
+import com.exe.sharkauction.models.PaymentEntity;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.requests.PaymentRequest;
+import com.exe.sharkauction.requests.PaymentResponseRequest;
 import com.exe.sharkauction.requests.ProductRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
 import com.exe.sharkauction.services.IPaymentService;
@@ -30,5 +32,13 @@ public class PaymentController {
     ) throws Exception {
         PaymentResponse.PaymentData paymentData = paymentService.createPaymentLink(IPaymentMapper.INSTANCE.toModel(request));
         return CoreApiResponse.success(paymentData,"Thêm sản phẩm mới thành công");
+    }
+
+    @PutMapping("/{id}")
+    public CoreApiResponse<PaymentEntity> updateProduct(
+            @Valid @RequestBody PaymentResponseRequest paymentResponseRequest
+    ){
+        PaymentEntity payment = paymentService.returnValueOfPayment(paymentResponseRequest);
+        return CoreApiResponse.success(payment, "");
     }
 }
