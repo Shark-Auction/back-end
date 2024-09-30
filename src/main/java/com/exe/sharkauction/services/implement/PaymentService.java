@@ -1,6 +1,7 @@
 package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.components.exceptions.AppException;
+import com.exe.sharkauction.components.securities.UserPrincipal;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
 import com.exe.sharkauction.models.UserEntity;
@@ -20,6 +21,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,8 +44,8 @@ public class PaymentService implements IPaymentService {
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
     private final String PARTNER_CODE = "Phuc0987";
-    private String CANCEL_URL = "http://localhost:8080/api/v1/payment/success";
-    private String RETURN_URL = "http://localhost:8080/api/v1/payment/cancel";
+    private String CANCEL_URL = "http://localhost:5173/u/payment-success";
+    private String RETURN_URL = "http://localhost:5173/u/payment-cancel";
 
     @Override
     public PaymentResponse.PaymentData createPaymentLink(PaymentEntity paymentEntity) throws Exception {
@@ -112,6 +115,28 @@ public class PaymentService implements IPaymentService {
         payment.setStatus(PaymentStatus.fromString(paymentResponseRequest.getStatus()));
 
         return paymentRepository.save(payment);
+    }
+
+    @Override
+    public List<PaymentEntity> getPayments() {
+        return paymentRepository.findAll();
+    }
+
+    @Override
+    public PaymentEntity getPayments(Long id) {
+        return paymentRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "HttpStatus.BAD_REQUEST"));
+    }
+
+    @Override
+    public List<PaymentEntity> getMyPayments() {
+        return paymentRepository.findByPaymentUserId(getCurrentUser().getId());
+    }
+
+    private UserEntity getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userPrincipal.getUser();
     }
 
     private String getSignature(PaymentEntity paymentEntity) throws Exception {
