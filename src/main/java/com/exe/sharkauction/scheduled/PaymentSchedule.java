@@ -24,7 +24,7 @@ public class PaymentSchedule {
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
     private final String PARTNER_CODE = "Phuc0987";
 
-    @Scheduled(fixedDelay = 3600000)
+    @Scheduled(fixedRate = 600000)
     public void trackingPayment(){
         List<PaymentEntity> paymentEntities = paymentRepository.findAll();
         for(PaymentEntity paymentEntity : paymentEntities){

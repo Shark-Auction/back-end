@@ -41,7 +41,10 @@ public class PaymentEntity {
     @JoinColumn(name = "order_id")
     private OrderEntity orderEntity;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
     private String checkoutUrl;
+
     private boolean senderTransaction;
 }

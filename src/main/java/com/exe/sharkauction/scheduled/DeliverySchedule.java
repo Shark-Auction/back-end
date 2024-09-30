@@ -15,7 +15,7 @@ public class DeliverySchedule {
     @Autowired
     private IDeliveryRepository deliveryRepository;
 
-    @Scheduled(fixedRate = 7200000)
+    @Scheduled(fixedRate = 600000)
     public void checkDeliveryStatus() {
         List<DeliveryEntity> deliveries = deliveryRepository.findAll(); // Fetch all delivery entities or customize your query
         for (DeliveryEntity delivery : deliveries) {
