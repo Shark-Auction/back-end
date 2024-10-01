@@ -20,11 +20,10 @@ public class RatingController {
 
     @PostMapping
     public CoreApiResponse<RatingEntity> addRating(
-            @Valid @ModelAttribute RatingRequest request,
-            @RequestParam(name = "imagesFile", required = false) List<MultipartFile> images
+            @Valid @RequestBody RatingRequest request
     ) {
         RatingEntity rating = IRatingMapper.INSTANCE.toModel(request);
-        RatingEntity savedRating = ratingService.addRating(rating, images);
+        RatingEntity savedRating = ratingService.addRating(rating, null);
         return CoreApiResponse.success(savedRating);
     }
 //

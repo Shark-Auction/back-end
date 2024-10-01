@@ -33,7 +33,7 @@ public class RatingService implements IRatingService {
 
     @Override
     public RatingEntity addRating(RatingEntity rating, List<MultipartFile> images) {
-        if (rating.getCustomer() == null || rating.getCustomer().getId() == null) {
+        if (rating.getCustomer().getId() == null) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Customer information is missing.");
         }
 
@@ -51,22 +51,22 @@ public class RatingService implements IRatingService {
         validateUserRole(customer);
         validateProductStatus(product);
 
-        // Store images and associate them with the rating
-        List<RatingMediaEntity> ratingMediaEntities = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile image : images) {
-                try {
-                    String storedFileName = UploadImagesUtils.storeFile(image, IMAGE_PATH);
-                    RatingMediaEntity ratingMedia = new RatingMediaEntity();
-                    ratingMedia.setMediaUrl(storedFileName);
-                    ratingMedia.setRatingEntity(rating);
-                    ratingMediaEntities.add(ratingMedia);
-                } catch (IOException e) {
-                    throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store image file");
-                }
-            }
-        }
-        rating.setMedia(ratingMediaEntities);
+//        // Store images and associate them with the rating
+//        List<RatingMediaEntity> ratingMediaEntities = new ArrayList<>();
+//        if (images != null && !images.isEmpty()) {
+//            for (MultipartFile image : images) {
+//                try {
+//                    String storedFileName = UploadImagesUtils.storeFile(image, IMAGE_PATH);
+//                    RatingMediaEntity ratingMedia = new RatingMediaEntity();
+//                    ratingMedia.setMediaUrl(storedFileName);
+//                    ratingMedia.setRatingEntity(rating);
+//                    ratingMediaEntities.add(ratingMedia);
+//                } catch (IOException e) {
+//                    throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store image file");
+//                }
+//            }
+//        }
+//        rating.setMedia(ratingMediaEntities);
 
         // Save and return the rating
         return ratingRepository.save(rating);
