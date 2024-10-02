@@ -4,6 +4,8 @@ import com.exe.sharkauction.models.enums.VoucherStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "vouchers")
 @Data
@@ -20,6 +22,10 @@ public class VoucherEntity extends BaseEntity{
     private String voucherCode;
 
     private float discount;
+
+    private Date startTime;
+
+    private Date endTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

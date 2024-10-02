@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IOrderService {
 
-    OrderEntity createOrder(OrderEntity order);
+    OrderEntity createOrder(OrderEntity order, String voucherCode);
 
     List<OrderEntity> getListOrder();
 
