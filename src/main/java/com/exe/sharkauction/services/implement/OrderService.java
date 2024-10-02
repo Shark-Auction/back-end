@@ -2,18 +2,9 @@ package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
-import com.exe.sharkauction.models.AuctionEntity;
-import com.exe.sharkauction.models.OrderEntity;
-import com.exe.sharkauction.models.ProductEntity;
-import com.exe.sharkauction.models.UserEntity;
-import com.exe.sharkauction.models.enums.AuctionStatus;
-import com.exe.sharkauction.models.enums.OrderStatus;
-import com.exe.sharkauction.models.enums.OrderType;
-import com.exe.sharkauction.models.enums.ProductStatus;
-import com.exe.sharkauction.repositories.IAuctionRepository;
-import com.exe.sharkauction.repositories.IOrderRepository;
-import com.exe.sharkauction.repositories.IProductRepository;
-import com.exe.sharkauction.repositories.IUserRepository;
+import com.exe.sharkauction.models.*;
+import com.exe.sharkauction.models.enums.*;
+import com.exe.sharkauction.repositories.*;
 import com.exe.sharkauction.services.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,11 +25,22 @@ public class OrderService implements IOrderService {
     private final IProductRepository productRepository;
 
     private final IAuctionRepository auctionRepository;
+
+    private final IVoucherRepository voucherRepository;
     @Override
-    public OrderEntity createOrder(OrderEntity order) {
+    public OrderEntity createOrder(OrderEntity order, String voucherCode) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
+
+//        VoucherEntity voucher = null;
+//        if (voucherCode != null && !voucherCode.isEmpty()) {
+//            voucher = voucherRepository.findByVoucherCode(voucherCode)
+//                    .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Mã voucher không hợp lệ"));
+//
+//            if (voucher.getStatus() != VoucherStatus.Available) {
+//                throw new AppException(HttpStatus.BAD_REQUEST, "Voucher không còn hiệu lực");
+//            }
 
         ProductEntity product = productRepository.findById(order.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại"));
@@ -70,7 +72,7 @@ public class OrderService implements IOrderService {
         }
 
         order.setBuyer(user);
-        order.setStatus(OrderStatus.processing);
+        order.setStatus(OrderStatus.pending);
         order.setOrderDate(LocalDate.now());
 
         return orderRepository.save(order);
@@ -87,7 +89,7 @@ public class OrderService implements IOrderService {
         UserEntity user = userPrincipal.getUser();
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không tồn tại"));
-        if (order.getProduct().getSeller().getId().equals(user.getId())) {
+        if ((!order.getProduct().getSeller().getId().equals(user.getId()))&&(!order.getBuyer().getId().equals(user.getId()))){
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         return order;
