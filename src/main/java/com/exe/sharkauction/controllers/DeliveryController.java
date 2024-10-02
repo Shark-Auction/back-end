@@ -63,4 +63,12 @@ public class DeliveryController {
         List<DeliveryEntity> deliveryEntities = deliveryService.getMyDeliveriesSender();
         return CoreApiResponse.success(deliveryEntities, "Lấy thông tin thành công");
     }
+
+    @GetMapping("/order/{id}")
+    public CoreApiResponse<List<DeliveryEntity>> getDeliveryByOrderID(
+            @Valid @PathVariable Long id
+    ){
+        List<DeliveryEntity> deliveryEntities = deliveryService.getDeliveryByOrderId(id);
+        return CoreApiResponse.success(deliveryEntities, "Lấy thông tin thành công");
+    }
 }

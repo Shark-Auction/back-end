@@ -105,6 +105,11 @@ public class DeliveryService implements IDeliveryService {
         return deliveryRepository.findByReceiver_Id(this.getCurrentUser().getId());
     }
 
+    @Override
+    public List<DeliveryEntity> getDeliveryByOrderId(Long orderId) {
+        return deliveryRepository.findByOrderId(orderId);
+    }
+
 //    @Override
 //    public List<DeliveryEntity> getMyDeliveries() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
