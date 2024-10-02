@@ -13,4 +13,5 @@ public interface IDeliveryService {
     public List<DeliveryEntity> getDeliveries();
     public List<DeliveryEntity> getMyDeliveriesSender();
     public List<DeliveryEntity> getMyDeliveriesReceiver();
+    public List<DeliveryEntity> getDeliveryByOrderId(Long orderId);
 }
