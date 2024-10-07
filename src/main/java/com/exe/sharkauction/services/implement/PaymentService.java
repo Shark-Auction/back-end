@@ -4,10 +4,12 @@ import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
+import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.UserEntity;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IPaymentRepository;
+import com.exe.sharkauction.repositories.IProductRepository;
 import com.exe.sharkauction.repositories.IUserRepository;
 import com.exe.sharkauction.requests.PaymentResponseRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
@@ -38,28 +40,42 @@ public class PaymentService implements IPaymentService {
     private final IPaymentRepository paymentRepository;
     private final IUserRepository userRepository;
     private final IOrderRepository orderRepository;
+    private final IProductRepository productRepository;
 
 
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
     private final String PARTNER_CODE = "Phuc0987";
-    private String CANCEL_URL = "http://localhost:5173/u/payment-success";
-    private String RETURN_URL = "http://localhost:5173/u/payment-cancel";
+    private String CANCEL_URL = "http://localhost:5173/u/payment-cancel";
+    private String RETURN_URL = "http://localhost:5173/u/payment-success";
 
     @Override
     public PaymentResponse.PaymentData createPaymentLink(PaymentEntity paymentEntity) throws Exception {
         String url = "https://api-merchant.payos.vn/v2/payment-requests";
         RestTemplate restTemplate = new RestTemplate();
         //Create Payment Entity
-        OrderEntity order = orderRepository.findById(paymentEntity.getOrderEntity().getId())
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no order!"));
+//        OrderEntity order = orderRepository.findById(paymentEntity.getOrderEntity().getId())
+//                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no order!"));
+
+        ProductEntity product = productRepository.findById(paymentEntity.getProduct().getId())
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no product!"));
 
         UserEntity user = userRepository.findById(paymentEntity.getPaymentUser().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no User!"));
 
-        paymentEntity.setAmount((int)order.getPrice());
-        paymentEntity.setDescription("O" + order.getId());
+        if (paymentEntity.isBuyNow()) {
+            if(product.isBuyNow()){
+                paymentEntity.setAmount((int) product.getBuyNowPrice());
+
+            }else{
+               throw new AppException(HttpStatus.BAD_REQUEST,"Đơn hàng không hỗ trợ mua ngay");
+            }
+        } else {
+            paymentEntity.setAmount((int) product.getFinalPrice());
+        }
+
+        paymentEntity.setDescription("O" + product.getId());
         paymentEntity.setOrderCode(Integer.parseInt(String.valueOf(new Date().getTime()).substring(String.valueOf(new Date().getTime()).length() - 6)));
 
         paymentEntity = paymentRepository.save(paymentEntity);
@@ -84,11 +100,16 @@ public class PaymentService implements IPaymentService {
 
         ArrayNode itemsArray = paymentRequest.putArray("items");
 //        for (PaymentRequest.Item item : paymentEntity.getItems()) {
-            ObjectNode itemNode = mapper.createObjectNode();
-            itemNode.put("name", order.getProduct().getName());
-            itemNode.put("quantity", 1);
-            itemNode.put("price", order.getPrice());
-            itemsArray.add(itemNode);
+        ObjectNode itemNode = mapper.createObjectNode();
+        itemNode.put("name", product.getName());
+        itemNode.put("quantity", 1);
+        if (paymentEntity.isBuyNow()) {
+            itemNode.put("price", product.getBuyNowPrice());
+        } else {
+            itemNode.put("price", product.getFinalPrice());
+        }
+//        itemNode.put("price", order.getPrice());
+        itemsArray.add(itemNode);
 //        }
 
         HttpEntity<ObjectNode> requestEntity = new HttpEntity<>(paymentRequest, headers);
@@ -110,7 +131,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public PaymentEntity returnValueOfPayment(PaymentResponseRequest paymentResponseRequest) {
-        List<PaymentEntity> payments =  paymentRepository.findByPaymentID(paymentResponseRequest.getPaymentLinkId());
+        List<PaymentEntity> payments = paymentRepository.findByPaymentID(paymentResponseRequest.getPaymentLinkId());
         PaymentEntity payment = payments.get(0);
         payment.setStatus(PaymentStatus.fromString(paymentResponseRequest.getStatus()));
 
@@ -133,7 +154,7 @@ public class PaymentService implements IPaymentService {
         return paymentRepository.findByPaymentUserId(getCurrentUser().getId());
     }
 
-    private UserEntity getCurrentUser(){
+    private UserEntity getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userPrincipal.getUser();

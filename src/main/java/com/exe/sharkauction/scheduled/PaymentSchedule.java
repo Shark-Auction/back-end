@@ -3,10 +3,12 @@ package com.exe.sharkauction.scheduled;
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
+import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.enums.OrderStatus;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IPaymentRepository;
+import com.exe.sharkauction.repositories.IProductRepository;
 import com.exe.sharkauction.responses.PaymentResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,6 +27,8 @@ public class PaymentSchedule {
 
     @Autowired
     private IOrderRepository orderRepository;
+    @Autowired
+    private IProductRepository productRepository;
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
@@ -41,10 +45,12 @@ public class PaymentSchedule {
                 PaymentStatus currentStatus = this.getPaymentStatus(paymentEntity.getPaymentID());
                 paymentEntity.setStatus(currentStatus);
                 paymentRepository.save(paymentEntity);
-                OrderEntity order = orderRepository.findById(paymentEntity.getOrderEntity().getId())
-                        .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không tồn tại"));
-//                if()
-                order.setStatus(OrderStatus.paid);
+//                ProductEntity product = paymentEntity.getProduct();
+//                OrderEntity order = orderRepository.findByProductId(product.getId());
+//               if(paymentEntity.getStatus()== PaymentStatus.PAID){
+////                   order.
+//
+//               }
 
             }
         }

@@ -94,7 +94,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductEntity getProductById(long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Cannot find jewelry with id: " + id));
+                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Cannot find product with id: " + id));
     }
 
     @Override

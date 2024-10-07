@@ -20,6 +20,6 @@ public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrderEntity o WHERE o.product = :product")
     boolean existsByProduct(@Param("product") ProductEntity product);
 
-//    @Query("SELECT o FROM OrderEntity o WHERE o.product.id = :productId")
-//    OrderEntity findFirstByProductId(Long productId);
+    @Query("SELECT o FROM OrderEntity o WHERE o.product.id = :productId AND o.status = 'PENDING'")
+    OrderEntity findByProductIdAndStatusPending(@Param("productId") Long productId);
 }

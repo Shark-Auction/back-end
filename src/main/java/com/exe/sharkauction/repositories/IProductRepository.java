@@ -17,4 +17,6 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("SELECT p FROM ProductEntity p WHERE p.seller = :seller")
     List<ProductEntity> findProductsBySeller(@Param("seller") UserEntity seller);
 
+
+
 }

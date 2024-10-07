@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface IPaymentMapper {
     IPaymentMapper INSTANCE = Mappers.getMapper(IPaymentMapper.class);
-    @Mapping(source = "orderId", target = "orderEntity.id")
+    @Mapping(source = "productId", target = "product.id")
     @Mapping(source = "userId", target = "paymentUser.id")
     PaymentEntity toModel(PaymentRequest request);
 }

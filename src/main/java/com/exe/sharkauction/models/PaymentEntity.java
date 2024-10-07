@@ -37,9 +37,13 @@ public class PaymentEntity {
     @JoinColumn(name = "payment_user_id")
     private UserEntity paymentUser;
 
+//    @ManyToOne
+//    @JoinColumn(name = "order_id")
+//    private OrderEntity orderEntity;
+
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private OrderEntity orderEntity;
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
@@ -47,4 +51,7 @@ public class PaymentEntity {
     private String checkoutUrl;
 
     private boolean senderTransaction;
+
+    private boolean buyNow;
+
 }
