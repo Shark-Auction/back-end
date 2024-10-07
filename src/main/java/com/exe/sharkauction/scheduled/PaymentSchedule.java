@@ -62,7 +62,7 @@ public class PaymentSchedule {
 //
 //               }
                 if(paymentEntity.getStatus() == PaymentStatus.PAID){
-                    VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
+
 
                     OrderRequest orderRequest = new OrderRequest();
                     orderRequest.setFullName(paymentEntity.getToFullName());
@@ -71,10 +71,12 @@ public class PaymentSchedule {
                     orderRequest.setPhoneNumber(paymentEntity.getToPhoneNumber());
                     orderRequest.setProduct_id(paymentEntity.getProduct().getId());
                     orderRequest.setToAddress(paymentEntity.getToAddress());
-                    if(voucher!=null){
-                        orderRequest.setVoucher_id(voucher.getId());
+                    if(paymentEntity.getVoucherCode()!= null){
+                        VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
+                        if(voucher != null) {
+                            orderRequest.setDiscount(voucher.getDiscount());
+                        }
                     }
-
                     OrderEntity order = IOrderMapper.INSTANCE.toModel(orderRequest);
                     order.setBuyer(paymentEntity.getPaymentUser());
 

@@ -24,5 +24,5 @@ public class OrderRequest {
 
     private OrderType type;
 
-    private long voucher_id;
+    private float discount;
 }

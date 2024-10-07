@@ -61,9 +61,8 @@ public class OrderEntity extends BaseEntity{
     @Column(name = "received_date")
     private LocalDate receivedDate;
 
-    @OneToOne
-    @JoinColumn(name="voucher_id")
-    private VoucherEntity voucher;
+    private float discount;
+
 
 
 }
