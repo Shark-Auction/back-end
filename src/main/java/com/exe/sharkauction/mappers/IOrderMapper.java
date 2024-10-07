@@ -11,6 +11,8 @@ public interface IOrderMapper {
     IOrderMapper INSTANCE = Mappers.getMapper(IOrderMapper.class);
 
     @Mapping(target = "product.id", source = "product_id")
+    @Mapping(target = "voucher.id", source = "voucher_id")
+
     OrderEntity toModel(OrderRequest request);
 
 

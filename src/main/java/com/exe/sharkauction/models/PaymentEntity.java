@@ -59,6 +59,8 @@ public class PaymentEntity {
     private String toPhoneNumber;
     private String note;
     private String toAddress;
+
+    @Enumerated(EnumType.STRING)
     private OrderType type;
     private String voucherCode;
 

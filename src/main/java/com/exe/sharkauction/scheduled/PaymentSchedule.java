@@ -5,11 +5,13 @@ import com.exe.sharkauction.mappers.IOrderMapper;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
 import com.exe.sharkauction.models.ProductEntity;
+import com.exe.sharkauction.models.VoucherEntity;
 import com.exe.sharkauction.models.enums.OrderStatus;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IPaymentRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
+import com.exe.sharkauction.repositories.IVoucherRepository;
 import com.exe.sharkauction.requests.OrderRequest;
 import com.exe.sharkauction.requests.PaymentRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
@@ -33,7 +35,8 @@ public class PaymentSchedule {
     private IOrderRepository orderRepository;
     @Autowired
     private IProductRepository productRepository;
-
+    @Autowired
+    private IVoucherRepository voucherRepository;
     @Autowired
     private IOrderService orderService;
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
@@ -59,6 +62,7 @@ public class PaymentSchedule {
 //
 //               }
                 if(paymentEntity.getStatus() == PaymentStatus.PAID){
+                    VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
                     OrderRequest orderRequest = new OrderRequest();
                     orderRequest.setFullName(paymentEntity.getToFullName());
                     orderRequest.setNote(paymentEntity.getNote());
@@ -66,7 +70,7 @@ public class PaymentSchedule {
                     orderRequest.setPhoneNumber(paymentEntity.getToPhoneNumber());
                     orderRequest.setProduct_id(paymentEntity.getProduct().getId());
                     orderRequest.setToAddress(paymentEntity.getToAddress());
-                    orderRequest.setVoucherCode(paymentEntity.getVoucherCode());
+                    orderRequest.setVoucher_id(voucher.getId());
 
                     OrderEntity order = IOrderMapper.INSTANCE.toModel(orderRequest);
                     order.setBuyer(paymentEntity.getPaymentUser());

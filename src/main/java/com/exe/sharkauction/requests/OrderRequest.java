@@ -24,5 +24,5 @@ public class OrderRequest {
 
     private OrderType type;
 
-    private String voucherCode;
+    private long voucher_id;
 }

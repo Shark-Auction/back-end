@@ -2,16 +2,10 @@ package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
-import com.exe.sharkauction.models.OrderEntity;
-import com.exe.sharkauction.models.PaymentEntity;
-import com.exe.sharkauction.models.ProductEntity;
-import com.exe.sharkauction.models.UserEntity;
+import com.exe.sharkauction.models.*;
 import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.PaymentStatus;
-import com.exe.sharkauction.repositories.IOrderRepository;
-import com.exe.sharkauction.repositories.IPaymentRepository;
-import com.exe.sharkauction.repositories.IProductRepository;
-import com.exe.sharkauction.repositories.IUserRepository;
+import com.exe.sharkauction.repositories.*;
 import com.exe.sharkauction.requests.PaymentResponseRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
 import com.exe.sharkauction.services.IPaymentService;
@@ -42,6 +36,7 @@ public class PaymentService implements IPaymentService {
     private final IUserRepository userRepository;
     private final IOrderRepository orderRepository;
     private final IProductRepository productRepository;
+    private final IVoucherRepository voucherRepository;
 
 
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
@@ -62,17 +57,24 @@ public class PaymentService implements IPaymentService {
         ProductEntity product = productRepository.findById(paymentEntity.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no product!"));
 
+        float discount = 0f;
+        VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
+        if (voucher != null) {
+            discount = voucher.getDiscount();
+
+        }
         UserEntity user = this.getCurrentUser();
+        paymentEntity.setPaymentUser(user);
 
 
         if (paymentEntity.getType() == OrderType.BuyNow) {
-            if(product.isBuyNow()){
-                paymentEntity.setAmount((int) product.getBuyNowPrice());
-            }else{
-                throw new AppException(HttpStatus.BAD_REQUEST,"Đơn hàng không hỗ trợ mua ngay");
+            if (product.isBuyNow()) {
+                paymentEntity.setAmount((int) product.getBuyNowPrice() - ((int) discount));
+            } else {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Đơn hàng không hỗ trợ mua ngay");
             }
         } else {
-            paymentEntity.setAmount((int) product.getFinalPrice());
+            paymentEntity.setAmount((int) product.getFinalPrice() - ((int) discount));
         }
 
         paymentEntity.setDescription("O" + product.getId());
@@ -103,10 +105,10 @@ public class PaymentService implements IPaymentService {
         ObjectNode itemNode = mapper.createObjectNode();
         itemNode.put("name", product.getName());
         itemNode.put("quantity", 1);
-        if (paymentEntity.getType() ==  OrderType.BuyNow) {
-            itemNode.put("price", product.getBuyNowPrice());
+        if (paymentEntity.getType() == OrderType.BuyNow) {
+            itemNode.put("price", (product.getBuyNowPrice() - discount));
         } else {
-            itemNode.put("price", product.getFinalPrice());
+            itemNode.put("price", (product.getFinalPrice() - discount));
         }
 //        itemNode.put("price", order.getPrice());
         itemsArray.add(itemNode);

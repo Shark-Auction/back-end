@@ -35,6 +35,7 @@ public class VoucherEntity extends BaseEntity{
     @JoinColumn(name = "creator_id")
     private UserEntity creator;
 
+    @Enumerated(EnumType.STRING)
     private VoucherStatus status;
 
 }
