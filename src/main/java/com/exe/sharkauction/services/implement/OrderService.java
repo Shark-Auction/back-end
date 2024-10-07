@@ -28,10 +28,10 @@ public class OrderService implements IOrderService {
 
     private final IVoucherRepository voucherRepository;
     @Override
-    public OrderEntity createOrder(OrderEntity order, String voucherCode) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        UserEntity user = userPrincipal.getUser();
+    public OrderEntity createOrder(OrderEntity order) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = order.getBuyer();
 
 //        VoucherEntity voucher = null;
 //        if (voucherCode != null && !voucherCode.isEmpty()) {

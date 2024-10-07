@@ -23,7 +23,7 @@ public class OrderController  {
     @PostMapping("")
     public CoreApiResponse<OrderEntity> createOrder(
             @Valid @RequestBody OrderRequest orderRequest){
-        OrderEntity order = orderService.createOrder(INSTANCE.toModel(orderRequest), orderRequest.getVoucherCode());
+        OrderEntity order = orderService.createOrder(INSTANCE.toModel(orderRequest));
         return CoreApiResponse.success(order,"Đơn hàng đã được mua thành công");
     }
 

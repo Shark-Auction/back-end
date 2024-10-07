@@ -9,6 +9,5 @@ import org.mapstruct.factory.Mappers;
 public interface IPaymentMapper {
     IPaymentMapper INSTANCE = Mappers.getMapper(IPaymentMapper.class);
     @Mapping(source = "productId", target = "product.id")
-    @Mapping(source = "userId", target = "paymentUser.id")
     PaymentEntity toModel(PaymentRequest request);
 }

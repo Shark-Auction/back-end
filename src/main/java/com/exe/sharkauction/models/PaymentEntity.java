@@ -1,5 +1,6 @@
 package com.exe.sharkauction.models;
 
+import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.requests.PaymentRequest;
 import jakarta.persistence.*;
@@ -51,7 +52,14 @@ public class PaymentEntity {
     private String checkoutUrl;
 
     private boolean senderTransaction;
+//
+//    private boolean buyNow;
 
-    private boolean buyNow;
+    private String toFullName;
+    private String toPhoneNumber;
+    private String note;
+    private String toAddress;
+    private OrderType type;
+    private String voucherCode;
 
 }

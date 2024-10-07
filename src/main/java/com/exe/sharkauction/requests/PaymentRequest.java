@@ -1,5 +1,6 @@
 package com.exe.sharkauction.requests;
 
+import com.exe.sharkauction.models.enums.OrderType;
 import lombok.*;
 
 import java.util.List;
@@ -12,10 +13,17 @@ import java.util.List;
 public class PaymentRequest {
 
 //    private int orderCode;
-    private Long userId;
+//    private Long userId;
     private Long productId;
     private boolean senderTransaction;
-    private boolean buyNow;
+//    private boolean buyNow;
 
-    // Getters and Setters for all fields
+    //Order
+    private String toFullName;
+    private String toPhoneNumber;
+    private String note;
+
+    private String toAddress;
+    private OrderType type;
+    private String voucherCode;
 }

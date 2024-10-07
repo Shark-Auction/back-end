@@ -1,6 +1,7 @@
 package com.exe.sharkauction.requests;
 
 import com.exe.sharkauction.models.ProductEntity;
+import com.exe.sharkauction.models.enums.OrderType;
 import lombok.*;
 
 @Data
@@ -21,7 +22,7 @@ public class OrderRequest {
 
     private String toAddress;
 
-    private String type;
+    private OrderType type;
 
     private String voucherCode;
 }

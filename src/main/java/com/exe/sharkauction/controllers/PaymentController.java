@@ -27,6 +27,7 @@ public class PaymentController {
     private final IPaymentService paymentService;
 
     @PostMapping("")
+    @PreAuthorize("hasRole('USER')")
     public CoreApiResponse<PaymentResponse.PaymentData> createProduct(
             @Valid @RequestBody PaymentRequest request
     ) throws Exception {

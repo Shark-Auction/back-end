@@ -1,6 +1,7 @@
 package com.exe.sharkauction.scheduled;
 
 import com.exe.sharkauction.components.exceptions.AppException;
+import com.exe.sharkauction.mappers.IOrderMapper;
 import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
 import com.exe.sharkauction.models.ProductEntity;
@@ -9,7 +10,10 @@ import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IPaymentRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
+import com.exe.sharkauction.requests.OrderRequest;
+import com.exe.sharkauction.requests.PaymentRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
+import com.exe.sharkauction.services.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +33,15 @@ public class PaymentSchedule {
     private IOrderRepository orderRepository;
     @Autowired
     private IProductRepository productRepository;
+
+    @Autowired
+    private IOrderService orderService;
     private final String CLIENT_ID = "7d3784da-544f-466f-bec3-799ef1fd4c6a";
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
     private final String PARTNER_CODE = "Phuc0987";
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 60000)
     public void trackingPayment(){
         List<PaymentEntity> paymentEntities = paymentRepository.findAll();
         for(PaymentEntity paymentEntity : paymentEntities){
@@ -44,13 +51,28 @@ public class PaymentSchedule {
 
                 PaymentStatus currentStatus = this.getPaymentStatus(paymentEntity.getPaymentID());
                 paymentEntity.setStatus(currentStatus);
-                paymentRepository.save(paymentEntity);
+                paymentEntity = paymentRepository.save(paymentEntity);
 //                ProductEntity product = paymentEntity.getProduct();
 //                OrderEntity order = orderRepository.findByProductId(product.getId());
 //               if(paymentEntity.getStatus()== PaymentStatus.PAID){
 ////                   order.
 //
 //               }
+                if(paymentEntity.getStatus() == PaymentStatus.PAID){
+                    OrderRequest orderRequest = new OrderRequest();
+                    orderRequest.setFullName(paymentEntity.getToFullName());
+                    orderRequest.setNote(paymentEntity.getNote());
+                    orderRequest.setType(paymentEntity.getType());
+                    orderRequest.setPhoneNumber(paymentEntity.getToPhoneNumber());
+                    orderRequest.setProduct_id(paymentEntity.getProduct().getId());
+                    orderRequest.setToAddress(paymentEntity.getToAddress());
+                    orderRequest.setVoucherCode(paymentEntity.getVoucherCode());
+
+                    OrderEntity order = IOrderMapper.INSTANCE.toModel(orderRequest);
+                    order.setBuyer(paymentEntity.getPaymentUser());
+
+                    orderService.createOrder(order);
+                }
 
             }
         }

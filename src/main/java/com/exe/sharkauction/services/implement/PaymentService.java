@@ -6,6 +6,7 @@ import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.PaymentEntity;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.UserEntity;
+import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.repositories.IPaymentRepository;
@@ -61,15 +62,14 @@ public class PaymentService implements IPaymentService {
         ProductEntity product = productRepository.findById(paymentEntity.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no product!"));
 
-        UserEntity user = userRepository.findById(paymentEntity.getPaymentUser().getId())
-                .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "There are no User!"));
+        UserEntity user = this.getCurrentUser();
 
-        if (paymentEntity.isBuyNow()) {
+
+        if (paymentEntity.getType() == OrderType.BuyNow) {
             if(product.isBuyNow()){
                 paymentEntity.setAmount((int) product.getBuyNowPrice());
-
             }else{
-               throw new AppException(HttpStatus.BAD_REQUEST,"Đơn hàng không hỗ trợ mua ngay");
+                throw new AppException(HttpStatus.BAD_REQUEST,"Đơn hàng không hỗ trợ mua ngay");
             }
         } else {
             paymentEntity.setAmount((int) product.getFinalPrice());
@@ -103,7 +103,7 @@ public class PaymentService implements IPaymentService {
         ObjectNode itemNode = mapper.createObjectNode();
         itemNode.put("name", product.getName());
         itemNode.put("quantity", 1);
-        if (paymentEntity.isBuyNow()) {
+        if (paymentEntity.getType() ==  OrderType.BuyNow) {
             itemNode.put("price", product.getBuyNowPrice());
         } else {
             itemNode.put("price", product.getFinalPrice());
