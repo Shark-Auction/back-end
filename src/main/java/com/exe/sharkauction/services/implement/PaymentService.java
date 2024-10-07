@@ -5,6 +5,7 @@ import com.exe.sharkauction.components.securities.UserPrincipal;
 import com.exe.sharkauction.models.*;
 import com.exe.sharkauction.models.enums.OrderType;
 import com.exe.sharkauction.models.enums.PaymentStatus;
+import com.exe.sharkauction.models.enums.VoucherStatus;
 import com.exe.sharkauction.repositories.*;
 import com.exe.sharkauction.requests.PaymentResponseRequest;
 import com.exe.sharkauction.responses.PaymentResponse;
@@ -59,7 +60,7 @@ public class PaymentService implements IPaymentService {
 
         float discount = 0f;
         VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
-        if (voucher != null) {
+        if (voucher != null && voucher.getStatus() == VoucherStatus.Available) {
             discount = voucher.getDiscount();
 
         }
