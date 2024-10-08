@@ -69,7 +69,7 @@ public class OrderService implements IOrderService {
         }
 
         order.setBuyer(user);
-        order.setStatus(OrderStatus.pending);
+        order.setStatus(OrderStatus.paid);
         order.setOrderDate(LocalDate.now());
 
         return orderRepository.save(order);
