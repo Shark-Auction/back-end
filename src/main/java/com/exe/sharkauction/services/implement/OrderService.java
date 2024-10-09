@@ -27,17 +27,15 @@ public class OrderService implements IOrderService {
     private final IAuctionRepository auctionRepository;
 
     private final IVoucherRepository voucherRepository;
+
+    private final ISystemTransactionRepository transactionRepository;
+
+    private final IWalletRepository walletRepository;
+
     @Override
     public OrderEntity createOrder(OrderEntity order) {
         UserEntity user = order.getBuyer();
-//        VoucherEntity voucher = null;
-//        if (voucherCode != null && !voucherCode.isEmpty()) {
-//            voucher = voucherRepository.findByVoucherCode(voucherCode)
-//                    .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Mã voucher không hợp lệ"));
-//
-//            if (voucher.getStatus() != VoucherStatus.Available) {
-//                throw new AppException(HttpStatus.BAD_REQUEST, "Voucher không còn hiệu lực");
-//            }
+
 
         ProductEntity product = productRepository.findById(order.getProduct().getId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại"));
@@ -154,5 +152,22 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.received);
 
         orderRepository.save(order);
+
+        SystemTransactionEntity systemTransaction = new SystemTransactionEntity();
+        systemTransaction.setMoney(order.getPrice());
+        systemTransaction.setStatus(TransactionStatus.Payment);
+        systemTransaction.setUser(order.getProduct().getSeller());
+        transactionRepository.save(systemTransaction);
+
+        WalletEntity wallet = walletRepository.findByUser(order.getProduct().getSeller());
+        if (wallet == null) {
+            wallet = new WalletEntity();
+            wallet.setUser(order.getProduct().getSeller());
+            wallet.setMoney(0);
+            wallet = walletRepository.save(wallet);
+        }
+        wallet.setMoney((float)((order.getPrice())*0.9));
+        walletRepository.save(wallet);
+
     }
 }
