@@ -136,6 +136,7 @@ public class OrderService implements IOrderService {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Bạn không có quyền truy cập");
         }
         order.setStatus(OrderStatus.delivered);
+        order.setSendDate(LocalDate.now());
         orderRepository.save(order);
 
     }
@@ -169,5 +170,22 @@ public class OrderService implements IOrderService {
         wallet.setMoney((float)((order.getPrice())*0.9));
         walletRepository.save(wallet);
 
+    }
+    @Override
+    public Long countOrdersByToday() {
+        LocalDate today = LocalDate.now();
+        return orderRepository.countOrdersByToday(today);
+    }
+    @Override
+    public Float calculateRevenueByDateRange(LocalDate startDate, LocalDate endDate) {
+        return orderRepository.calculateRevenueByDateRange(startDate, endDate);
+    }
+    @Override
+    public Long countReceivedOrders() {
+        return orderRepository.countReceivedOrders();
+    }
+    @Override
+    public Float calculateTotalRevenue() {
+        return orderRepository.calculateTotalRevenueReceived();
     }
 }

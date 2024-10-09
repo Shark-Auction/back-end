@@ -63,6 +63,4 @@ public class OrderEntity extends BaseEntity{
 
     private float discount;
 
-
-
 }
