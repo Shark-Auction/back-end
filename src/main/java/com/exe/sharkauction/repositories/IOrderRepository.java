@@ -24,6 +24,9 @@ public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("SELECT o FROM OrderEntity o WHERE o.product.id = :productId AND o.status = 'PENDING'")
     OrderEntity findByProductIdAndStatusPending(@Param("productId") Long productId);
 
+    @Query("SELECT o FROM OrderEntity o WHERE o.product.id = :productId")
+    OrderEntity findByProductId(@Param("productId") Long productId);
+
 
     @Query("SELECT SUM(o.price * 0.1) FROM OrderEntity o WHERE o.status = 'received'")
     Float calculateTotalRevenueReceived();

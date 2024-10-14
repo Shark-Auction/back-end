@@ -1,8 +1,11 @@
 package com.exe.sharkauction.scheduled;
 
 import com.exe.sharkauction.models.DeliveryEntity;
+import com.exe.sharkauction.models.OrderEntity;
 import com.exe.sharkauction.models.enums.DeliveryStatus;
+import com.exe.sharkauction.models.enums.OrderStatus;
 import com.exe.sharkauction.repositories.IDeliveryRepository;
+import com.exe.sharkauction.repositories.IOrderRepository;
 import com.exe.sharkauction.services.implement.GHNAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +17,9 @@ import java.util.List;
 public class DeliverySchedule {
     @Autowired
     private IDeliveryRepository deliveryRepository;
+
+    @Autowired
+    private IOrderRepository orderRepository;
 
     @Scheduled(fixedRate = 600000)
     public void checkDeliveryStatus() {
@@ -28,6 +34,21 @@ public class DeliverySchedule {
 
                 String orderCode = delivery.getOrderCode();
                 DeliveryStatus updatedStatus = GHNAPIService.getOrderStatus(orderCode);
+                OrderEntity order = orderRepository.findByProductId(delivery.getProductId());
+                if(updatedStatus == DeliveryStatus.DELIVERED){
+                    order.setStatus(OrderStatus.delivered);
+                }
+                else if(updatedStatus == DeliveryStatus.WAITING_RECEIVING){
+                    order.setStatus(OrderStatus.processing);
+                }
+                else if(updatedStatus == DeliveryStatus.PICKED){
+                    order.setStatus(OrderStatus.shipping);
+                }
+                else if(updatedStatus == DeliveryStatus.CANCEL){
+                    order.setStatus(OrderStatus.cancelled);
+                }
+                orderRepository.save(order);
+
 
                 if (updatedStatus != null) {
                     delivery.setStatus(updatedStatus);
