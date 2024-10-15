@@ -65,6 +65,8 @@ public class OrderService implements IOrderService {
         } else {
             throw new AppException(HttpStatus.BAD_REQUEST, "Loại đơn hàng không hợp lệ.");
         }
+        productRepository.save(product);
+        auctionRepository.save(auction);
 
         order.setBuyer(user);
         order.setStatus(OrderStatus.paid);
