@@ -44,8 +44,8 @@ public class PaymentService implements IPaymentService {
     private final String API_KEY = "f76ce004-2300-4657-9ca5-9ae629d5b233";
     private final String CHECK_SUM_KEY = "99a51f9b4ebe9b533ebaa675c924d543c137c48c2020406d583d4b575ef4b20f";
     private final String PARTNER_CODE = "Phuc0987";
-    private String CANCEL_URL = "http://sharkauction/u/payment-cancel";
-    private String RETURN_URL = "http://sharkauction/u/payment-success";
+    private String CANCEL_URL = "http://sharkauction.online/u/payment-cancel";
+    private String RETURN_URL = "http://sharkauction.online/u/payment-success";
 
     @Override
     public PaymentResponse.PaymentData createPaymentLink(PaymentEntity paymentEntity) throws Exception {
