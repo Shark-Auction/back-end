@@ -283,8 +283,11 @@ public class AuctionService implements IAuctionService {
         auction.setCurrentPrice(product.getStartingPrice());
         auction.setStartTime(request.getStartTime());
         auction.setEndTime(request.getEndTime());
+        auction.setTotalBids(0);
+        auction.setWinner(null);
         auction.setStatus(AuctionStatus.Waiting);
         product.setFinalPrice(0f);
+        product.setStatus(ProductStatus.SCHEDULING);
         productRepository.save(product);
 
         return auctionRepository.save(auction);

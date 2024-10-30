@@ -42,6 +42,7 @@ public class AuctionSchedule {
             }
 
             if (auction.getStatus() == AuctionStatus.InProgress && endTime.isBefore(now)) {
+                product.setFinalPrice(auction.getCurrentPrice());
                 if (auction.getWinner() != null) {
                     if (product.getFinalPrice() < product.getDesiredPrice()) {
                         auction.setStatus(AuctionStatus.WaitingConfirm);
