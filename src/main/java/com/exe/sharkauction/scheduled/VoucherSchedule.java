@@ -16,7 +16,7 @@ public class VoucherSchedule {
     @Autowired
     private IVoucherRepository voucherRepository;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(fixedRate = 300000)
     public void updateVoucherStatus() {
         Date currentDate = new Date();
 

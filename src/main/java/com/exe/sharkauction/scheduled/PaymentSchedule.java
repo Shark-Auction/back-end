@@ -6,6 +6,7 @@ import com.exe.sharkauction.models.*;
 import com.exe.sharkauction.models.enums.OrderStatus;
 import com.exe.sharkauction.models.enums.PaymentStatus;
 import com.exe.sharkauction.models.enums.TransactionStatus;
+import com.exe.sharkauction.models.enums.VoucherStatus;
 import com.exe.sharkauction.repositories.*;
 import com.exe.sharkauction.requests.OrderRequest;
 import com.exe.sharkauction.requests.PaymentRequest;
@@ -70,6 +71,8 @@ public class PaymentSchedule {
                         VoucherEntity voucher = voucherRepository.findByVoucherCode(paymentEntity.getVoucherCode());
                         if(voucher != null) {
                             orderRequest.setDiscount(voucher.getDiscount());
+                            voucher.setStatus(VoucherStatus.Used);
+                            voucherRepository.save(voucher);
                         }
                     }
                     OrderEntity order = IOrderMapper.INSTANCE.toModel(orderRequest);
