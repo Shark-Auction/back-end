@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.Properties;
+
 @Component
 public class MailService {
     private static final String CONTENT_TYPE_TEXT_HTML = "text/html;charset=\"utf-8\"";
@@ -52,20 +53,41 @@ public class MailService {
         Message message = new MimeMessage(session);
 
         try {
-            if(event.getType().equals("verify")){
+            if (event.getType().equals("verify")) {
                 message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(event.getUser().getEmail())});
 
                 message.setFrom(new InternetAddress(email));
                 message.setSubject("Xác thực tài khoản");
-                message.setContent(thymeleafService.getVerifyContent(event.getUser(),event.getUrl()), CONTENT_TYPE_TEXT_HTML);
+                message.setContent(thymeleafService.getVerifyContent(event.getUser(), event.getUrl()), CONTENT_TYPE_TEXT_HTML);
                 Transport.send(message);
-            }else if (event.getType().equals("forgot")){
+            } else if (event.getType().equals("forgot")) {
                 message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(event.getUser().getEmail())});
 
                 message.setFrom(new InternetAddress(email));
                 message.setSubject("Đặt lại mật khẩu");
                 message.setContent(thymeleafService.getResetPasswordContent(event.getUser(), event.getUrl()), CONTENT_TYPE_TEXT_HTML);
                 Transport.send(message);
+            } else if ("auction_end".equals(event.getType())) {
+                message.setRecipients(Message.RecipientType.TO, new InternetAddress[]
+                        {new InternetAddress(event.getAuction().getProduct().getSeller().getEmail())});
+                message.setFrom(new InternetAddress(email));
+                message.setSubject("Kết thúc đấu giá");
+                message.setContent(thymeleafService.getAuctionEndContent(event.getAuction()), CONTENT_TYPE_TEXT_HTML);
+                Transport.send(message);
+            } else if ("auction_win".equals(event.getType())) {
+                message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(event.getAuction().getWinner().getEmail())});
+                message.setFrom(new InternetAddress(email));
+                message.setSubject("Chúc mừng bạn đã thắng đấu giá!");
+                message.setContent(thymeleafService.getAuctionWinContent(event.getAuction()), CONTENT_TYPE_TEXT_HTML);
+                Transport.send(message);
+
+            } else if ("confirm_product".equals(event.getType())) {
+                message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(event.getProduct().getSeller().getEmail())});
+                message.setFrom(new InternetAddress(email));
+                message.setSubject("Sản phẩm của bạn đã được duyệt!");
+                message.setContent(thymeleafService.getConfirmProductContent(event.getProduct()), CONTENT_TYPE_TEXT_HTML);
+                Transport.send(message);
+
             }
 
         } catch (MessagingException e) {

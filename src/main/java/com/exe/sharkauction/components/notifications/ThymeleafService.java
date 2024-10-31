@@ -1,6 +1,8 @@
 package com.exe.sharkauction.components.notifications;
 
 import com.exe.sharkauction.components.constants.TemplateMail;
+import com.exe.sharkauction.models.AuctionEntity;
+import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.UserEntity;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
@@ -62,4 +64,39 @@ public class ThymeleafService {
 
         return templateEngine.process(TemplateMail.RESET_PASSWORD_MAIL, context);
     }
+
+    public String getAuctionEndContent(AuctionEntity auction) {
+        final Context context = new Context();
+
+        context.setVariable("sellerName", auction.getProduct().getSeller().getFull_name());
+        context.setVariable("productName", auction.getProduct().getName());
+        context.setVariable("winnerName", auction.getWinner().getFull_name());
+        context.setVariable("finalBidPrice", auction.getCurrentPrice());
+        context.setVariable("status", auction.getStatus());
+
+        context.setVariable("dashboardUrl", "http://sharkauction.online/");
+
+        return templateEngine.process(TemplateMail.AUCTION_END_MAIL, context);
+    }
+    public String getAuctionWinContent(AuctionEntity auction) {
+        final Context context = new Context();
+
+        context.setVariable("sellerName", auction.getProduct().getSeller().getFull_name());
+        context.setVariable("productName", auction.getProduct().getName());
+        context.setVariable("winnerName", auction.getWinner().getFull_name());
+        context.setVariable("finalBidPrice", auction.getCurrentPrice());
+        context.setVariable("status", auction.getStatus());
+        context.setVariable("dashboardUrl", "http://sharkauction.online/");
+        return templateEngine.process(TemplateMail.AUCTION_WIN_MAIL, context);
+    }
+
+    public String getConfirmProductContent(ProductEntity product) {
+        final Context context = new Context();
+
+        context.setVariable("sellerName", product.getSeller().getFull_name());
+        context.setVariable("productName", product.getName());
+        context.setVariable("dashboardUrl", "http://sharkauction.online/");
+        return templateEngine.process(TemplateMail.CONFIRM_PRODUCT, context);
+    }
+
 }

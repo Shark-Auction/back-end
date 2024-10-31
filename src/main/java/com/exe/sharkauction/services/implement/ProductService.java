@@ -1,6 +1,7 @@
 package com.exe.sharkauction.services.implement;
 
 import com.exe.sharkauction.components.constants.ImageContants;
+import com.exe.sharkauction.components.events.MailEvent;
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.exceptions.DataNotFoundException;
 import com.exe.sharkauction.components.securities.UserPrincipal;
@@ -16,6 +17,8 @@ import com.exe.sharkauction.repositories.IProductRepository;
 import com.exe.sharkauction.requests.ProductRequest;
 import com.exe.sharkauction.services.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +36,9 @@ public class ProductService implements IProductService {
     private final IBrandRepository brandRepository;
     private final IOriginRepository originRepository;
     private final IProductMapper productMapper;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public ProductEntity createProduct(ProductEntity product, MultipartFile imageFile, List<MultipartFile> images) throws IOException {
@@ -164,6 +170,8 @@ public class ProductService implements IProductService {
         if (existingProduct.getStatus() == ProductStatus.PENDING) {
             existingProduct.setStatus(ProductStatus.CONFIRMING);
             productRepository.save(existingProduct);
+            MailEvent mailEvent = new MailEvent(this, existingProduct, "confirm_product");
+            eventPublisher.publishEvent(mailEvent);
         } else {
             throw new AppException(HttpStatus.BAD_REQUEST,"Không thể xác nhận sản phẩm");
         }

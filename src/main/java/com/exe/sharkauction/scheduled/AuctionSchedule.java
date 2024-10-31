@@ -1,5 +1,6 @@
 package com.exe.sharkauction.scheduled;
 
+import com.exe.sharkauction.components.events.MailEvent;
 import com.exe.sharkauction.models.AuctionEntity;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.ViolateEntity;
@@ -8,6 +9,8 @@ import com.exe.sharkauction.repositories.IAuctionRepository;
 import com.exe.sharkauction.repositories.IProductRepository;
 import com.exe.sharkauction.repositories.IViolateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ public class AuctionSchedule {
     private final IAuctionRepository auctionRepository;
     private final IProductRepository productRepository;
     private final IViolateRepository violateRepository;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
 
     @Scheduled(fixedRate = 3000)
     public void updateStatusAuction() {
@@ -47,15 +53,23 @@ public class AuctionSchedule {
                     if (product.getFinalPrice() < product.getDesiredPrice()) {
                         auction.setStatus(AuctionStatus.WaitingConfirm);
                         product.setStatus(ProductStatus.AUCTIONSUCCESS);
+
+
                     } else {
                         auction.setStatus(AuctionStatus.WaitingPay);
                         product.setStatus(ProductStatus.AUCTIONSUCCESS);
+
                     }
+                    MailEvent mailEvent = new MailEvent(this, auction, "auction_win");
+                    eventPublisher.publishEvent(mailEvent);
                 }
                 else {
                     auction.setStatus(AuctionStatus.Fail);
                     product.setStatus(ProductStatus.AUCTIONFAIL);
+
                 }
+                MailEvent mailEvent = new MailEvent(this, auction, "auction_end");
+                eventPublisher.publishEvent(mailEvent);
 
             }
 
@@ -84,6 +98,7 @@ public class AuctionSchedule {
 
             productRepository.save(product);
             auctionRepository.save(auction);
+
         }
     }
 }
