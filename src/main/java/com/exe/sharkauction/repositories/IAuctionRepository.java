@@ -58,8 +58,8 @@ public interface IAuctionRepository extends JpaRepository<AuctionEntity, Long> {
     @Query("SELECT a FROM AuctionEntity a WHERE a.product.id = :productId AND a.status NOT IN ('FAIL', 'CANCEL')")
     List<AuctionEntity> findActiveAuctionsByProductId(@Param("productId") Long productId);
 
-    @Query("SELECT a FROM AuctionEntity a WHERE a.winner = :winner AND a.endTime < CURRENT_TIMESTAMP")
-    List<AuctionEntity> findByWinnerAndEnded(@Param("winner") UserEntity winner);
+    @Query("SELECT a FROM AuctionEntity a WHERE a.winner.id = :winner")
+    List<AuctionEntity> findByWinner(@Param("winner") Long winner);
     @Query("SELECT a FROM AuctionEntity a WHERE a.product.seller.id = :sellerId")
     List<AuctionEntity> findAuctionsBySellerId(@Param("sellerId") Long sellerId);
 

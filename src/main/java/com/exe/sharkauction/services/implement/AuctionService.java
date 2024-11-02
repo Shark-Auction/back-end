@@ -228,8 +228,20 @@ public class AuctionService implements IAuctionService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserEntity user = userPrincipal.getUser();
 
-        return auctionRepository.findByWinnerAndEnded(user);
+        List<AuctionEntity> auctions = auctionRepository.findByWinner(user.getId());
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+
+        return auctions.stream()
+                .filter(auction -> {
+                    LocalDateTime endTime = auction.getEndTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+                    return endTime.isBefore(now);
+                })
+                .collect(Collectors.toList());
     }
+
 
     private void validateAuctionDuration(Date startTime, Date endTime) {
         if (startTime.after(endTime)) {
