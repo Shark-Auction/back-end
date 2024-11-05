@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 public interface IRatingMapper {
     IRatingMapper INSTANCE = Mappers.getMapper(IRatingMapper.class);
 
-    @Mapping(target = "customer.id", source = "customerId")
+//    @Mapping(target = "customer.id", source = "customerId")
     @Mapping(target = "product.id", source = "productId")
     RatingEntity toModel(RatingRequest request);
 //

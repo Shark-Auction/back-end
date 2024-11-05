@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingRequest {
-    private Long customerId;
+//    private Long customerId;
     private Long productId;
     private float ratingValue;
     private String review;

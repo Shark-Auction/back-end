@@ -3,6 +3,7 @@ package com.exe.sharkauction.services.implement;
 import com.exe.sharkauction.components.constants.ImageContants;
 import com.exe.sharkauction.components.exceptions.AppException;
 import com.exe.sharkauction.components.exceptions.DataNotFoundException;
+import com.exe.sharkauction.components.securities.UserPrincipal;
 import com.exe.sharkauction.components.utils.UploadImagesUtils;
 import com.exe.sharkauction.models.ProductEntity;
 import com.exe.sharkauction.models.RatingEntity;
@@ -15,6 +16,8 @@ import com.exe.sharkauction.repositories.IUserRepository;
 import com.exe.sharkauction.services.IRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,22 +36,26 @@ public class RatingService implements IRatingService {
 
     @Override
     public RatingEntity addRating(RatingEntity rating, List<MultipartFile> images) {
-        if (rating.getCustomer().getId() == null) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Customer information is missing.");
-        }
+//        if (rating.getCustomer().getId() == null) {
+//            throw new AppException(HttpStatus.BAD_REQUEST, "Customer information is missing.");
+//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
 
-        Long customerId = rating.getCustomer().getId();
+//        Long customerId = rating.getCustomer().getId();
         Long productId = rating.getProduct().getId();
         String IMAGE_PATH = ImageContants.RATING_IMAGE_PATH;
+        rating.setCustomer(user);
 
         // Fetch user and product in parallel
-        UserEntity customer = userRepository.findById(customerId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + customerId));
+//        UserEntity customer = userRepository.findById(user.getId())
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + customerId));
 
         ProductEntity product = productRepository.findById(productId)
                 .orElseThrow(() -> new UsernameNotFoundException("Product not found with id : " + productId));
 
-        validateUserRole(customer);
+//        validateUserRole(customer);
 //        validateProductStatus(product);
 
 //        // Store images and associate them with the rating
