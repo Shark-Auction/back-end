@@ -49,7 +49,7 @@ public class RatingService implements IRatingService {
                 .orElseThrow(() -> new UsernameNotFoundException("Product not found with id : " + productId));
 
         validateUserRole(customer);
-        validateProductStatus(product);
+//        validateProductStatus(product);
 
 //        // Store images and associate them with the rating
 //        List<RatingMediaEntity> ratingMediaEntities = new ArrayList<>();
@@ -126,11 +126,11 @@ public class RatingService implements IRatingService {
         }
     }
 
-    private void validateProductStatus(ProductEntity product) {
-        // Replace with your actual product status check
-        ProductStatus requiredStatus = ProductStatus.DELIVERED;  // Example status
-        if (!product.getStatus().equals(requiredStatus)) {
-            throw new RuntimeException("Product is not in a valid state for rating");
-        }
-    }
+//    private void validateProductStatus(ProductEntity product) {
+//        // Replace with your actual product status check
+//        ProductStatus requiredStatus = ProductStatus.DELIVERED;  // Example status
+//        if (!product.getStatus().equals(requiredStatus)) {
+//            throw new RuntimeException("Product is not in a valid state for rating");
+//        }
+//    }
 }
